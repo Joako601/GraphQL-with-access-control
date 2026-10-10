@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+strawberry-graphql[fastapi]
+psycopg[binary]
+python-dotenv
+bcrypt
+PyJWT
