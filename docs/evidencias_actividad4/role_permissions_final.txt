@@ -1,0 +1,31 @@
+rol      |       permiso       | is_active 
+---------------+---------------------+-----------
+ ADMINISTRADOR | accounts.read       | t
+ ADMINISTRADOR | accounts.write      | t
+ ADMINISTRADOR | company.users.read  | t
+ ADMINISTRADOR | company.users.write | t
+ ADMINISTRADOR | concepts.read       | t
+ ADMINISTRADOR | concepts.write      | t
+ ADMINISTRADOR | roles.read          | t
+ ADMINISTRADOR | roles.write         | t
+ ADMINISTRADOR | transactions.read   | t
+ ADMINISTRADOR | transactions.write  | t
+ CAPTURISTA    | accounts.read       | t
+ CAPTURISTA    | accounts.write      | f
+ CAPTURISTA    | concepts.read       | t
+ CAPTURISTA    | transactions.read   | t
+ CAPTURISTA    | transactions.write  | t
+ CONSULTA      | accounts.read       | t
+ CONSULTA      | company.users.read  | t
+ CONSULTA      | concepts.read       | t
+ CONSULTA      | concepts.write      | f
+ CONSULTA      | transactions.read   | t
+ CONTADOR      | accounts.read       | t
+ CONTADOR      | accounts.write      | t
+ CONTADOR      | company.users.read  | t
+ CONTADOR      | concepts.read       | t
+ CONTADOR      | concepts.write      | t
+ CONTADOR      | roles.read          | t
+ CONTADOR      | transactions.read   | t
+ CONTADOR      | transactions.write  | t
+(28 rows)
