@@ -4,3 +4,10 @@ __pycache__
 *.pyc
 .git
 .env
+.cache
+docs
+pruebas
+tmp
+*.pdf
+ENTREGA.html
+QA.md

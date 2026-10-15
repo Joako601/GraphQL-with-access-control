@@ -1,3 +1,5 @@
+name: unidad2-actividad4
+
 services:
 
   api:
@@ -5,13 +7,14 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    container_name: actividad4-api
+    container_name: unidad2-actividad4-api
 
     ports:
-      - "${APP_PORT}:8000"
+      - "127.0.0.1:${APP_PORT}:8000"
 
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST}
@@ -28,7 +31,7 @@ services:
   postgres:
     image: postgres:16
 
-    container_name: actividad4-postgres
+    container_name: unidad2-actividad4-postgres
 
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -36,7 +39,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
     ports:
-      - "${POSTGRES_HOST_PORT}:5432"
+      - "127.0.0.1:${POSTGRES_HOST_PORT}:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -48,17 +51,23 @@ services:
 
     restart: unless-stopped
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
   pgadmin:
     image: dpage/pgadmin4
 
-    container_name: actividad4-pgadmin
+    container_name: unidad2-actividad4-pgadmin
 
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
 
     ports:
-      - "5051:80"
+      - "127.0.0.1:5054:80"
 
     depends_on:
       - postgres
