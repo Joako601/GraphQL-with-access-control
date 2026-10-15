@@ -1,0 +1,311 @@
+# Una empresa y los cinco puestos iniciales
+# Actor: Ana
+# Variables: {"actor": "1", "empresa": "1"}
+query Personas($actor:ID!,$empresa:ID!){
+  companyUsers(actorCompanyUserId:$actor,companyId:$empresa){
+    id
+    isAdmin
+    user { name }
+    role { code }
+  }
+}
+
+# Los cuatro roles del catálogo
+# Actor: catálogo público
+# Variables: {}
+{ roles { id code isActive } }
+
+# Los diez permisos del catálogo
+# Actor: catálogo público
+# Variables: {}
+{ permissions { id code isActive } }
+
+# Lista inicial de ADMINISTRADOR
+# Actor: catálogo público
+# Variables: {"rol": "1"}
+query PermisosDelRol($rol: ID!) {
+  rolePermissions(roleId: $rol) {
+    id
+    isActive
+    permission { code }
+  }
+}
+
+# Lista inicial de CONTADOR
+# Actor: catálogo público
+# Variables: {"rol": "2"}
+query PermisosDelRol($rol: ID!) {
+  rolePermissions(roleId: $rol) {
+    id
+    isActive
+    permission { code }
+  }
+}
+
+# Lista inicial de CAPTURISTA
+# Actor: catálogo público
+# Variables: {"rol": "3"}
+query PermisosDelRol($rol: ID!) {
+  rolePermissions(roleId: $rol) {
+    id
+    isActive
+    permission { code }
+  }
+}
+
+# Lista inicial de CONSULTA
+# Actor: catálogo público
+# Variables: {"rol": "4"}
+query PermisosDelRol($rol: ID!) {
+  rolePermissions(roleId: $rol) {
+    id
+    isActive
+    permission { code }
+  }
+}
+
+# María: createAccount rechazado antes
+# Actor: María
+# Variables: {"actor": "3", "input": {"companyId": "1", "accountType": "CASH", "name": "Caja de María antes"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# José: createAccount rechazado antes
+# Actor: José
+# Variables: {"actor": "4", "input": {"companyId": "1", "accountType": "CASH", "name": "Caja de José antes"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# Ana agrega accounts.write a CAPTURISTA
+# Actor: Ana
+# Variables: {"actor": "1", "input": {"roleId": "3", "permissionId": "4"}}
+mutation AgregarPermiso($actor: ID!, $input: AssignPermissionToRoleInput!) {
+  assignPermissionToRole(actorCompanyUserId: $actor, input: $input) {
+    id
+    isActive
+    role { code }
+    permission { code }
+  }
+}
+
+# La misma pareja activa no se duplica
+# Actor: Ana
+# Variables: {"actor": "1", "input": {"roleId": "3", "permissionId": "4"}}
+mutation AgregarPermiso($actor: ID!, $input: AssignPermissionToRoleInput!) {
+  assignPermissionToRole(actorCompanyUserId: $actor, input: $input) {
+    id
+    isActive
+    role { code }
+    permission { code }
+  }
+}
+
+# María: createAccount aceptado con permiso
+# Actor: María
+# Variables: {"actor": "3", "input": {"companyId": "1", "accountType": "CASH", "name": "Caja de María con permiso"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# José: createAccount aceptado con permiso
+# Actor: José
+# Variables: {"actor": "4", "input": {"companyId": "1", "accountType": "CASH", "name": "Caja de José con permiso"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# Ana quita accounts.write a CAPTURISTA
+# Actor: Ana
+# Variables: {"actor": "1", "rol": "3", "permiso": "4"}
+mutation QuitarPermiso($actor: ID!, $rol: ID!, $permiso: ID!) {
+  removePermissionFromRole(actorCompanyUserId: $actor, roleId: $rol, permissionId: $permiso)
+}
+
+# María: createAccount rechazado sin permiso
+# Actor: María
+# Variables: {"actor": "3", "input": {"companyId": "1", "accountType": "CASH", "name": "Caja de María sin permiso"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# José: createAccount rechazado sin permiso
+# Actor: José
+# Variables: {"actor": "4", "input": {"companyId": "1", "accountType": "CASH", "name": "Caja de José sin permiso"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# Pedro no registra movimientos como CONSULTA
+# Actor: Pedro
+# Variables: {"actor": "5", "input": {"accountId": "1", "conceptId": "1", "transactionType": "INCOME", "amount": "1500.00", "shortDescription": "Movimiento de Pedro"}}
+mutation RegistrarMovimiento($actor: ID!, $input: CreateTransactionInput!) {
+  createTransaction(actorCompanyUserId: $actor, input: $input) {
+    id
+    amount
+    capturedByUser { name }
+    account { name }
+  }
+}
+
+# Ana cambia a Pedro de CONSULTA a CAPTURISTA
+# Actor: Ana
+# Variables: {"actor": "1", "input": {"companyUserId": "5", "roleId": "3"}}
+mutation CambiarPuesto($actor: ID!, $input: AssignRoleInput!) {
+  assignRole(actorCompanyUserId: $actor, input: $input) {
+    id
+    isActive
+    role { code }
+    companyUser { id user { name } }
+  }
+}
+
+# Pedro registra el movimiento como CAPTURISTA
+# Actor: Pedro
+# Variables: {"actor": "5", "input": {"accountId": "1", "conceptId": "1", "transactionType": "INCOME", "amount": "1500.00", "shortDescription": "Movimiento de Pedro"}}
+mutation RegistrarMovimiento($actor: ID!, $input: CreateTransactionInput!) {
+  createTransaction(actorCompanyUserId: $actor, input: $input) {
+    id
+    amount
+    capturedByUser { name }
+    account { name }
+  }
+}
+
+# La lista de CONTADOR sigue igual
+# Actor: catálogo público
+# Variables: {"rol": "2"}
+query PermisosDelRol($rol: ID!) {
+  rolePermissions(roleId: $rol) {
+    id
+    isActive
+    permission { code }
+  }
+}
+
+# La lista de CONSULTA sigue igual
+# Actor: catálogo público
+# Variables: {"rol": "4"}
+query PermisosDelRol($rol: ID!) {
+  rolePermissions(roleId: $rol) {
+    id
+    isActive
+    permission { code }
+  }
+}
+
+# Luis: createAccount aceptado tras cambio de Pedro
+# Actor: Luis
+# Variables: {"actor": "2", "input": {"companyId": "1", "accountType": "CASH", "name": "Caja de Luis tras cambio de Pedro"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# José no puede dar concepts.write a CONSULTA
+# Actor: José
+# Variables: {"actor": "4", "input": {"roleId": "4", "permissionId": "6"}}
+mutation AgregarPermiso($actor: ID!, $input: AssignPermissionToRoleInput!) {
+  assignPermissionToRole(actorCompanyUserId: $actor, input: $input) {
+    id
+    isActive
+    role { code }
+    permission { code }
+  }
+}
+
+# Ana sí agrega concepts.write a CONSULTA
+# Actor: Ana
+# Variables: {"actor": "1", "input": {"roleId": "4", "permissionId": "6"}}
+mutation AgregarPermiso($actor: ID!, $input: AssignPermissionToRoleInput!) {
+  assignPermissionToRole(actorCompanyUserId: $actor, input: $input) {
+    id
+    isActive
+    role { code }
+    permission { code }
+  }
+}
+
+# Ana vuelve a quitar concepts.write de CONSULTA
+# Actor: Ana
+# Variables: {"actor": "1", "rol": "4", "permiso": "6"}
+mutation QuitarPermiso($actor: ID!, $rol: ID!, $permiso: ID!) {
+  removePermissionFromRole(actorCompanyUserId: $actor, roleId: $rol, permissionId: $permiso)
+}
+
+# Luis no puede crear una cuenta en otra empresa
+# Actor: Luis
+# Variables: {"actor": "2", "input": {"companyId": "2", "accountType": "CASH", "name": "Cuenta ajena"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# José no puede usar la membresía de Ana
+# Actor: José
+# Variables: {"actor": "1", "input": {"companyId": "1", "accountType": "CASH", "name": "Suplantación rechazada"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# María no puede leer las cuentas de otra empresa
+# Actor: María
+# Variables: {"actor": "3", "empresa": "2"}
+query($actor:ID!,$empresa:ID!){accounts(actorCompanyUserId:$actor,companyId:$empresa){id name}}
+
+# María: createAccount rechazado tras reinicio
+# Actor: María
+# Variables: {"actor": "3", "input": {"companyId": "1", "accountType": "CASH", "name": "Caja de María tras reinicio"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
+
+# José: createAccount rechazado tras reinicio
+# Actor: José
+# Variables: {"actor": "4", "input": {"companyId": "1", "accountType": "CASH", "name": "Caja de José tras reinicio"}}
+mutation CrearCuenta($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) {
+    id
+    name
+    companyId
+  }
+}
