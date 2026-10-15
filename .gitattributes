@@ -1,0 +1,5 @@
+*.pdf binary
+*.png binary
+
+# Conservar el formato tabular original de psql.
+docs/evidencias_actividad4/role_permissions_final.txt whitespace=-blank-at-eol
