@@ -1,0 +1,6 @@
+{
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "test_failure_after_first_write_rolls_back_every_relationship_change (pruebas.test_actividad5_e07.RolePermissionsRollbackTest.test_failure_after_first_write_rolls_back_every_relationship_change) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.125s\n\nOK\n",
+  "passed": true
+}

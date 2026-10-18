@@ -1,0 +1,8 @@
+{
+  "actor": "1",
+  "input": {
+    "companyId": "1",
+    "accountType": "CASH",
+    "name": "Caja de evidencia A5"
+  }
+}

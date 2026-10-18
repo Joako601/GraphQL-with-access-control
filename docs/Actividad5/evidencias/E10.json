@@ -1,0 +1,37 @@
+{
+  "accounts_before": {
+    "accounts": []
+  },
+  "created_account": {
+    "id": "1",
+    "name": "Caja de evidencia A5"
+  },
+  "created_concept": {
+    "id": "1",
+    "name": "Ingreso de evidencia A5"
+  },
+  "account_concept": {
+    "assignConceptToAccount": {
+      "id": "1",
+      "isActive": true
+    }
+  },
+  "created_transaction": {
+    "createTransaction": {
+      "id": "1",
+      "accountId": "1",
+      "conceptId": "1",
+      "transactionType": "INCOME",
+      "amount": "1500.00",
+      "isActive": true
+    }
+  },
+  "accounts_after": {
+    "accounts": [
+      {
+        "id": "1",
+        "name": "Caja de evidencia A5"
+      }
+    ]
+  }
+}

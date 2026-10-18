@@ -42,3 +42,25 @@ mutation AplicarConfiguracion($actor: ID!, $input: SetRolePermissionsInput!) {
 }
 
 fragment DatosPermiso on Permission { id code name }
+
+
+# E10: continuidad del proyecto
+query ConsultarCuentasE10($actor: ID!, $company: ID!) {
+  accounts(actorCompanyUserId: $actor, companyId: $company) { id name }
+}
+
+mutation CrearCuentaE10($actor: ID!, $input: CreateAccountInput!) {
+  createAccount(actorCompanyUserId: $actor, input: $input) { id name }
+}
+
+mutation CrearConceptoE10($actor: ID!, $input: CreateConceptInput!) {
+  createConcept(actorCompanyUserId: $actor, input: $input) { id name }
+}
+
+mutation AsociarConceptoE10($actor: ID!, $input: AssignConceptToAccountInput!) {
+  assignConceptToAccount(actorCompanyUserId: $actor, input: $input) { id isActive }
+}
+
+mutation RegistrarMovimientoE10($actor: ID!, $input: CreateTransactionInput!) {
+  createTransaction(actorCompanyUserId: $actor, input: $input) { id accountId conceptId transactionType amount isActive }
+}

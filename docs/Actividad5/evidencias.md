@@ -1,27 +1,18 @@
-# Registro de evidencias E01–E10
+# Registro de evidencias E01-E10
 
-**Estado:** plantillas preparadas; ejecución en base/API y capturas pendientes. No se atribuyen resultados esperados como resultados observados. Guarda capturas legibles en `evidencias/` con nombres `E01.png` … `E10.png` y no incluyas credenciales, tokens ni hashes.
+**Estado: ejecutadas en laboratorio local PostgreSQL/Docker.** Cada archivo JSON conserva las respuestas GraphQL y/o SQL observadas, sin credenciales, tokens ni hashes. `resumen.json` consolida los diez casos. Los IDs pertenecen solo a esta base local.
 
-En cada caso completa: **precondición**, **operación y variables**, **resultado esperado**, **resultado obtenido** (copiar respuesta real), **SQL/test**, **archivo de captura**.
-
-| Caso | Regla y verificación requerida | Estado |
+| Caso | Resultado observado | Evidencia |
 |---|---|---|
-| E01 | Cuatro roles, diez permisos; CAPTURISTA con S0 y cuatro relaciones activas. Respuesta de catálogos y SQL con IDs/parejas. | Pendiente de ejecutar |
-| E02 | `ExplorarCatalogo`: dos alias y fragmento, diez permisos sin filtro; `PAYMENTS` debe producir error de enum. | Pendiente de ejecutar |
-| E03 | Previsualizar S1 frente a S0: una alta, cero bajas, cuatro sin cambio, total cinco; comparar SQL previo y posterior sin cambio de filas. | Pendiente de ejecutar |
-| E04 | Aplicar S1, repetir. Esperado: `changed=true`, después `false`; cero cambios en repetición y sin parejas duplicadas. | Pendiente de ejecutar |
-| E05 | Aplicar S0, luego S1. `accounts.write` se desactiva/reactiva y conserva el mismo ID de relación. | Pendiente de ejecutar |
-| E06 | Para cada variante (rol inexistente/inactivo, ADMINISTRADOR, permiso inexistente mezclado, permiso inactivo, permiso repetido), probar preview y apply; guardar error y comparación SQL antes/después. | Pendiente de ejecutar |
-| E07 | Test controlado que falla después de `flush` y antes de commit; verificar persistencia desde sesión nueva. Registrar comando, prueba y salida. | Pendiente: requiere test de rollback y DB |
-| E08 | Aplicar `[]` al rol permitido; comprobar cero relaciones activas antes y después de reiniciar API, conservando filas. | Pendiente de ejecutar |
-| E09 | Restaurar S0 y comparar los cuatro roles por códigos con `configuracion_inicial.json`; duplicados: cero filas. | Pendiente de ejecutar |
-| E10 | Ejecutar lectura existente de cuentas y registrar movimiento válido con empresa/cuenta/concepto/monto del laboratorio. | Pendiente de ejecutar |
+| E01 | Cuatro roles, diez permisos; CAPTURISTA tiene S0 y cuatro relaciones activas. IDs reales de Ana, roles, permisos y relaciones incluidos. | [E01.json](evidencias/E01.json) |
+| E02 | Dos permisos en cada alias, diez sin filtro; `PAYMENTS` devuelve error de validacion del enum. | [E02.json](evidencias/E02.json) |
+| E03 | S1: una activacion, cero bajas, cuatro sin cambio, total cinco. Snapshots SQL anterior/posterior iguales. | [E03.json](evidencias/E03.json) |
+| E04 | Primera aplicacion `changed=true`; repeticion `changed=false`; IDs de parejas estables y cero duplicados. | [E04.json](evidencias/E04.json) |
+| E05 | `accounts.write` se desactiva y reactiva conservando la relacion ID 31; permiso del catalogo sigue activo. | [E05.json](evidencias/E05.json) |
+| E06 | Siete variantes invalidas rechazadas tanto en preview como en apply; snapshots de relaciones iguales. Incluye IDs duplicados como texto y numero. | [E06.json](evidencias/E06.json) |
+| E07 | Test controlado falla despues de la primera escritura y antes del commit; unittest verifica rollback desde una conexion nueva. Resultado: OK. | [E07.json](evidencias/E07.json) |
+| E08 | `[]` deja cero relaciones activas antes y despues de reiniciar la API; las filas se conservan y el catalogo sigue en 4 roles/10 permisos. | [E08.json](evidencias/E08.json) |
+| E09 | Se restaura S0; la matriz de los cuatro roles coincide con la inicial y no hay parejas duplicadas. | [E09.json](evidencias/E09.json) |
+| E10 | Lectura inicial de cuentas, alta de cuenta/concepto, asociacion y registro de movimiento INCOME por 1500.00; lectura posterior muestra la cuenta. | [E10.json](evidencias/E10.json) |
 
-## Captura de cada caso
-
-- **E01:** completar respuesta y salida SQL aquí: `[pegar resultado real]`.
-- **E02:** respuesta de alias/fragmento y error del enum: `[pegar resultado real]`.
-- **E03:** respuesta de preview y SQL comparativo: `[pegar resultado real]`.
-- **E04–E10:** agregar respuesta, salida SQL o test indicada en la tabla. Para fallos de validación, mostrar tanto el error como el estado persistido sin cambios.
-
-No hay archivos de imagen en esta entrega porque no se ejecutó la instancia. La matriz final describe el estado que debe restaurarse para entrega, no una aseveración de que la base de laboratorio haya sido probada.
+Las consultas/mutaciones estan en `operaciones.graphql`; las variables utilizadas estan en `variables/`. E06 incluye las preparaciones temporales de estado inactivo, restauradas tras cada variante. No se incluyen capturas del escritorio; las evidencias son respuestas JSON y comprobaciones SQL reproducibles.

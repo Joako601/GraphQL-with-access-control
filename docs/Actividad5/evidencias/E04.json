@@ -1,0 +1,97 @@
+{
+  "first_response": {
+    "setRolePermissions": {
+      "role": {
+        "code": "CAPTURISTA"
+      },
+      "activated": [
+        {
+          "code": "accounts.write"
+        }
+      ],
+      "deactivated": [],
+      "unchanged": [
+        {
+          "code": "accounts.read"
+        },
+        {
+          "code": "concepts.read"
+        },
+        {
+          "code": "transactions.read"
+        },
+        {
+          "code": "transactions.write"
+        }
+      ],
+      "finalCount": 5,
+      "changed": true
+    }
+  },
+  "second_response": {
+    "setRolePermissions": {
+      "role": {
+        "code": "CAPTURISTA"
+      },
+      "activated": [],
+      "deactivated": [],
+      "unchanged": [
+        {
+          "code": "accounts.read"
+        },
+        {
+          "code": "accounts.write"
+        },
+        {
+          "code": "concepts.read"
+        },
+        {
+          "code": "transactions.read"
+        },
+        {
+          "code": "transactions.write"
+        }
+      ],
+      "finalCount": 5,
+      "changed": false
+    }
+  },
+  "sql_after_both": [
+    {
+      "relation_id": 19,
+      "role": "CAPTURISTA",
+      "permission": "accounts.read",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 31,
+      "role": "CAPTURISTA",
+      "permission": "accounts.write",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 20,
+      "role": "CAPTURISTA",
+      "permission": "concepts.read",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 21,
+      "role": "CAPTURISTA",
+      "permission": "transactions.read",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 22,
+      "role": "CAPTURISTA",
+      "permission": "transactions.write",
+      "relation_active": true,
+      "permission_active": true
+    }
+  ],
+  "duplicate_pairs": []
+}

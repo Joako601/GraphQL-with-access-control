@@ -1,0 +1,3 @@
+query CatalogoEnumInvalido($actor: ID!) {
+  permissionCatalog(resource: PAYMENTS, actorCompanyUserId: $actor) { code }
+}
