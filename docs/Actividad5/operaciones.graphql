@@ -1,0 +1,44 @@
+query ExplorarCatalogo($actor: ID!) {
+  cuentas: permissionCatalog(resource: ACCOUNTS, actorCompanyUserId: $actor) { ...DatosPermiso }
+  movimientos: permissionCatalog(resource: TRANSACTIONS, actorCompanyUserId: $actor) { ...DatosPermiso }
+}
+
+query CatalogoCompleto($actor: ID!) {
+  permissionCatalog(actorCompanyUserId: $actor) { id code name isActive }
+}
+
+query RolesYPermisos {
+  roles(activeOnly: true) { id code name isActive }
+  permissions(activeOnly: true) { id code name isActive }
+}
+
+query PermisosDelRol($roleId: ID!) {
+  rolePermissions(roleId: $roleId) {
+    id isActive
+    permission { id code isActive }
+  }
+}
+
+query RevisarConfiguracion($actor: ID!, $input: SetRolePermissionsInput!) {
+  previewRolePermissions(input: $input, actorCompanyUserId: $actor) {
+    role { id code }
+    current { id code }
+    toActivate { id code }
+    toDeactivate { id code }
+    unchanged { id code }
+    finalCount
+  }
+}
+
+mutation AplicarConfiguracion($actor: ID!, $input: SetRolePermissionsInput!) {
+  setRolePermissions(input: $input, actorCompanyUserId: $actor) {
+    role { id code }
+    activated { id code }
+    deactivated { id code }
+    unchanged { id code }
+    finalCount
+    changed
+  }
+}
+
+fragment DatosPermiso on Permission { id code name }

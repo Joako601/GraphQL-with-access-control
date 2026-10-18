@@ -1,0 +1,7 @@
+{
+  "actor": "REEMPLAZAR_ID_MEMBRESIA_ANA",
+  "input": {
+    "roleId": "REEMPLAZAR_ID_ROL_CAPTURISTA",
+    "permissionIds": ["ID_ACCOUNTS_READ", "ID_ACCOUNTS_READ"]
+  }
+}
