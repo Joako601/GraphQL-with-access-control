@@ -1,0 +1,8 @@
+{
+  "actor": "1",
+  "input": {
+    "companyId": "1",
+    "conceptType": "INCOME",
+    "name": "Ingreso de evidencia A5"
+  }
+}

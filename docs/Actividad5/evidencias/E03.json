@@ -1,0 +1,105 @@
+{
+  "response": {
+    "previewRolePermissions": {
+      "role": {
+        "code": "CAPTURISTA"
+      },
+      "current": [
+        {
+          "code": "accounts.read"
+        },
+        {
+          "code": "concepts.read"
+        },
+        {
+          "code": "transactions.read"
+        },
+        {
+          "code": "transactions.write"
+        }
+      ],
+      "toActivate": [
+        {
+          "code": "accounts.write"
+        }
+      ],
+      "toDeactivate": [],
+      "unchanged": [
+        {
+          "code": "accounts.read"
+        },
+        {
+          "code": "concepts.read"
+        },
+        {
+          "code": "transactions.read"
+        },
+        {
+          "code": "transactions.write"
+        }
+      ],
+      "finalCount": 5
+    }
+  },
+  "sql_before": [
+    {
+      "relation_id": 19,
+      "role": "CAPTURISTA",
+      "permission": "accounts.read",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 20,
+      "role": "CAPTURISTA",
+      "permission": "concepts.read",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 21,
+      "role": "CAPTURISTA",
+      "permission": "transactions.read",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 22,
+      "role": "CAPTURISTA",
+      "permission": "transactions.write",
+      "relation_active": true,
+      "permission_active": true
+    }
+  ],
+  "sql_after": [
+    {
+      "relation_id": 19,
+      "role": "CAPTURISTA",
+      "permission": "accounts.read",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 20,
+      "role": "CAPTURISTA",
+      "permission": "concepts.read",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 21,
+      "role": "CAPTURISTA",
+      "permission": "transactions.read",
+      "relation_active": true,
+      "permission_active": true
+    },
+    {
+      "relation_id": 22,
+      "role": "CAPTURISTA",
+      "permission": "transactions.write",
+      "relation_active": true,
+      "permission_active": true
+    }
+  ],
+  "unchanged": true
+}

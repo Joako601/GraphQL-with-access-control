@@ -73,6 +73,80 @@ def listar_permisos(active_only):
     return repo.obtener_permisos(active_only)
 
 
+RESOURCE_PREFIXES = {
+    "COMPANY_USERS": "company.users.",
+    "ACCOUNTS": "accounts.",
+    "CONCEPTS": "concepts.",
+    "TRANSACTIONS": "transactions.",
+    "ROLES": "roles.",
+}
+
+
+def catalogo_permisos(resource, actor_company_user_id, current_user_id):
+    actor = _membresia_del_actor(actor_company_user_id)
+    exigir_permiso(actor["id"], "roles.read", current_user_id, actor["company_id"])
+    key = getattr(resource, "value", resource)
+    prefix = RESOURCE_PREFIXES.get(key) if key is not None else None
+    if key is not None and prefix is None:
+        raise AppError("Recurso de permisos inválido")
+    return repo.obtener_catalogo_permisos(prefix)
+
+
+def _validar_propuesta(data):
+    role_id = parse_id(data.role_id, "ID de rol")
+    permission_ids = [parse_id(value, "ID de permiso") for value in data.permission_ids]
+    if len(permission_ids) != len(set(permission_ids)):
+        raise AppError("La lista contiene IDs de permiso repetidos")
+    role, current, desired = repo.obtener_configuracion_rol(role_id, permission_ids)
+    if role is None:
+        raise AppError(f"El rol con id {role_id} no existe")
+    if not role["is_active"]:
+        raise AppError(f"El rol {role['code']} está desactivado")
+    if role["code"] == ADMIN_ROLE:
+        raise AppError("No se puede reemplazar la lista de permisos de ADMINISTRADOR")
+    if len(desired) != len(permission_ids):
+        found = {row["id"] for row in desired}
+        missing = next(value for value in permission_ids if value not in found)
+        raise AppError(f"El permiso con id {missing} no existe")
+    inactive = next((row for row in desired if not row["is_active"]), None)
+    if inactive:
+        raise AppError(f"El permiso {inactive['code']} está desactivado")
+    current_ids = {row["id"] for row in current}
+    desired_ids = {row["id"] for row in desired}
+    unchanged = [row for row in current if row["id"] in desired_ids]
+    return {
+        "role": role,
+        "current": current,
+        "desired": desired,
+        "to_activate": [row for row in desired if row["id"] not in current_ids],
+        "to_deactivate": [row for row in current if row["id"] not in desired_ids],
+        "unchanged": unchanged,
+        "final_count": len(desired),
+    }
+
+
+def previsualizar_permisos_rol(data, actor_company_user_id, current_user_id):
+    actor = _membresia_del_actor(actor_company_user_id)
+    exigir_permiso(actor["id"], "roles.read", current_user_id, actor["company_id"])
+    return _validar_propuesta(data)
+
+
+def establecer_permisos_rol(data, actor_company_user_id, current_user_id):
+    actor = _membresia_del_actor(actor_company_user_id)
+    exigir_permiso(actor["id"], "roles.write", current_user_id, actor["company_id"])
+    plan = _validar_propuesta(data)
+    if plan["to_activate"] or plan["to_deactivate"]:
+        repo.aplicar_configuracion_rol(plan["role"]["id"], plan["desired"], plan["current"])
+    return {
+        "role": plan["role"],
+        "activated": plan["to_activate"],
+        "deactivated": plan["to_deactivate"],
+        "unchanged": plan["unchanged"],
+        "final_count": plan["final_count"],
+        "changed": bool(plan["to_activate"] or plan["to_deactivate"]),
+    }
+
+
 def crear_permiso(data, actor_company_user_id, current_user_id):
     code = (data.code or "").strip().lower()
     if not PERMISSION_CODE_REGEX.match(code):

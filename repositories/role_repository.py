@@ -65,6 +65,16 @@ def obtener_permisos(active_only=None):
         return connection.execute(sql + " ORDER BY id;").fetchall()
 
 
+def obtener_catalogo_permisos(resource_prefix=None):
+    with get_connection() as connection:
+        sql = f"SELECT {PERMISSION_COLUMNS} FROM permissions WHERE is_active = TRUE"
+        params = ()
+        if resource_prefix:
+            sql += " AND code LIKE %s"
+            params = (resource_prefix + "%",)
+        return connection.execute(sql + " ORDER BY code;", params).fetchall()
+
+
 def obtener_permiso(permission_id):
     with get_connection() as connection:
         sql = f"SELECT {PERMISSION_COLUMNS} FROM permissions WHERE id = %s;"
@@ -81,6 +91,49 @@ def obtener_relacion_rol_permiso(role_id, permission_id):
     with get_connection() as connection:
         sql = f"SELECT {RP_COLUMNS} FROM role_permissions WHERE role_id = %s AND permission_id = %s;"
         return connection.execute(sql, (role_id, permission_id)).fetchone()
+
+
+def obtener_configuracion_rol(role_id, permission_ids):
+    with get_connection() as connection:
+        role = connection.execute(
+            f"SELECT {ROLE_COLUMNS} FROM roles WHERE id = %s;", (role_id,)
+        ).fetchone()
+        if role is None:
+            return None, [], []
+        permission_columns = ", ".join("p." + column.strip() for column in PERMISSION_COLUMNS.split(","))
+        current = connection.execute(
+            f"""SELECT {permission_columns} FROM permissions p
+                JOIN role_permissions rp ON rp.permission_id = p.id
+                WHERE rp.role_id = %s AND rp.is_active = TRUE AND p.is_active = TRUE
+                ORDER BY p.code;""", (role_id,)
+        ).fetchall()
+        desired = connection.execute(
+            f"SELECT {PERMISSION_COLUMNS} FROM permissions WHERE id = ANY(%s) ORDER BY code;",
+            (permission_ids,),
+        ).fetchall() if permission_ids else []
+        return role, current, desired
+
+
+def aplicar_configuracion_rol(role_id, desired_permissions, current_permissions):
+    desired_ids = [p["id"] for p in desired_permissions]
+    desired_set = set(desired_ids)
+    current_set = {p["id"] for p in current_permissions}
+    with get_connection() as connection:
+        for permission_id in desired_ids:
+            connection.execute(
+                """INSERT INTO role_permissions (role_id, permission_id, is_active)
+                   VALUES (%s, %s, TRUE)
+                   ON CONFLICT (role_id, permission_id) DO UPDATE SET is_active = TRUE
+                   WHERE role_permissions.is_active = FALSE;""",
+                (role_id, permission_id),
+            )
+        deactivate_ids = current_set - desired_set
+        if deactivate_ids:
+            connection.execute(
+                "UPDATE role_permissions SET is_active = FALSE WHERE role_id = %s AND permission_id = ANY(%s);",
+                (role_id, list(deactivate_ids)),
+            )
+    return desired_set - current_set, current_set - desired_set
 
 
 def crear_relacion_rol_permiso(role_id, permission_id):

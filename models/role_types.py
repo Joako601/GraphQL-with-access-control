@@ -1,9 +1,25 @@
 from typing import Optional
+from enum import Enum
 
 import strawberry
 
 from models.types import CompanyUser
 from repositories import role_repository, user_repository
+
+
+@strawberry.enum
+class PermissionResource(Enum):
+    COMPANY_USERS = "COMPANY_USERS"
+    ACCOUNTS = "ACCOUNTS"
+    CONCEPTS = "CONCEPTS"
+    TRANSACTIONS = "TRANSACTIONS"
+    ROLES = "ROLES"
+
+
+@strawberry.input
+class SetRolePermissionsInput:
+    role_id: strawberry.ID
+    permission_ids: list[strawberry.ID]
 
 
 @strawberry.type
@@ -80,3 +96,23 @@ class CompanyUserRole:
 class AssignRoleInput:
     company_user_id: strawberry.ID
     role_id: strawberry.ID
+
+
+@strawberry.type
+class RolePermissionPlan:
+    role: Role
+    current: list[Permission]
+    to_activate: list[Permission]
+    to_deactivate: list[Permission]
+    unchanged: list[Permission]
+    final_count: int
+
+
+@strawberry.type
+class RolePermissionUpdate:
+    role: Role
+    activated: list[Permission]
+    deactivated: list[Permission]
+    unchanged: list[Permission]
+    final_count: int
+    changed: bool
