@@ -1,7 +1,12 @@
 {
-  "actor": "REEMPLAZAR_ID_MEMBRESIA_ANA",
+  "actor": "1",
   "input": {
-    "roleId": "REEMPLAZAR_ID_ROL_CAPTURISTA",
-    "permissionIds": ["ID_ACCOUNTS_READ", "ID_CONCEPTS_READ", "ID_TRANSACTIONS_READ", "ID_TRANSACTIONS_WRITE"]
+    "roleId": "3",
+    "permissionIds": [
+      "3",
+      "5",
+      "7",
+      "8"
+    ]
   }
 }

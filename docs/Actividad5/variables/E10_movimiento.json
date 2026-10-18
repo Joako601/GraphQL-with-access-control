@@ -1,0 +1,10 @@
+{
+  "actor": "1",
+  "input": {
+    "accountId": "1",
+    "conceptId": "1",
+    "transactionType": "INCOME",
+    "amount": "1500.00",
+    "shortDescription": "Evidencia Actividad 5"
+  }
+}

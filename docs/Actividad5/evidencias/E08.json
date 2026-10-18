@@ -1,0 +1,35 @@
+{
+  "apply_response": {
+    "setRolePermissions": {
+      "role": {
+        "code": "CAPTURISTA"
+      },
+      "activated": [],
+      "deactivated": [
+        {
+          "code": "accounts.read"
+        },
+        {
+          "code": "accounts.write"
+        },
+        {
+          "code": "concepts.read"
+        },
+        {
+          "code": "transactions.read"
+        },
+        {
+          "code": "transactions.write"
+        }
+      ],
+      "unchanged": [],
+      "finalCount": 0,
+      "changed": true
+    }
+  },
+  "active_relations_before_restart": [],
+  "active_relations_after_restart": [],
+  "rows_preserved": true,
+  "role_count": 4,
+  "permission_count": 10
+}

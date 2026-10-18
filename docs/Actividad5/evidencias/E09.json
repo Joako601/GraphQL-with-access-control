@@ -1,0 +1,101 @@
+{
+  "restore_response": {
+    "setRolePermissions": {
+      "role": {
+        "code": "CAPTURISTA"
+      },
+      "activated": [
+        {
+          "code": "accounts.read"
+        },
+        {
+          "code": "concepts.read"
+        },
+        {
+          "code": "transactions.read"
+        },
+        {
+          "code": "transactions.write"
+        }
+      ],
+      "deactivated": [],
+      "unchanged": [],
+      "finalCount": 4,
+      "changed": true
+    }
+  },
+  "initial_matrix": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [
+      "accounts.read",
+      "concepts.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ]
+  },
+  "final_matrix": {
+    "ADMINISTRADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "company.users.write",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "roles.write",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONTADOR": [
+      "accounts.read",
+      "accounts.write",
+      "company.users.read",
+      "concepts.read",
+      "concepts.write",
+      "roles.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CAPTURISTA": [
+      "accounts.read",
+      "concepts.read",
+      "transactions.read",
+      "transactions.write"
+    ],
+    "CONSULTA": [
+      "accounts.read",
+      "company.users.read",
+      "concepts.read",
+      "transactions.read"
+    ]
+  },
+  "matches_initial": true,
+  "duplicate_pairs": []
+}

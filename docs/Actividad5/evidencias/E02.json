@@ -1,0 +1,58 @@
+{
+  "operation": "query ExplorarCatalogo($actor:ID!){cuentas:permissionCatalog(resource:ACCOUNTS,actorCompanyUserId:$actor){id code name} movimientos:permissionCatalog(resource:TRANSACTIONS,actorCompanyUserId:$actor){id code name}}",
+  "variables": {
+    "actor": "1"
+  },
+  "aliases_response": {
+    "cuentas": [
+      {
+        "id": "3",
+        "code": "accounts.read",
+        "name": "Ver cuentas"
+      },
+      {
+        "id": "4",
+        "code": "accounts.write",
+        "name": "Crear cuentas"
+      }
+    ],
+    "movimientos": [
+      {
+        "id": "7",
+        "code": "transactions.read",
+        "name": "Ver movimientos"
+      },
+      {
+        "id": "8",
+        "code": "transactions.write",
+        "name": "Registrar movimientos"
+      }
+    ]
+  },
+  "unfiltered_codes": [
+    "accounts.read",
+    "accounts.write",
+    "company.users.read",
+    "company.users.write",
+    "concepts.read",
+    "concepts.write",
+    "roles.read",
+    "roles.write",
+    "transactions.read",
+    "transactions.write"
+  ],
+  "invalid_enum_response": {
+    "data": null,
+    "errors": [
+      {
+        "message": "Value 'PAYMENTS' does not exist in 'PermissionResource' enum.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 46
+          }
+        ]
+      }
+    ]
+  }
+}
