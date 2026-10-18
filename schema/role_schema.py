@@ -11,6 +11,10 @@ from models.role_types import (
     Permission,
     Role,
     RolePermission,
+    PermissionResource,
+    SetRolePermissionsInput,
+    RolePermissionPlan,
+    RolePermissionUpdate,
 )
 from services import role_service
 from services.auth import usuario_actual
@@ -36,12 +40,51 @@ class RoleQuery:
         return [Permission(**row) for row in role_service.listar_permisos(active_only)]
 
     @strawberry.field
+    def permission_catalog(
+        self, info: strawberry.Info, actor_company_user_id: strawberry.ID,
+        resource: Optional[PermissionResource] = None,
+    ) -> List[Permission]:
+        return [Permission(**row) for row in role_service.catalogo_permisos(
+            resource, actor_company_user_id, usuario_actual(info)
+        )]
+
+    @strawberry.field
+    def preview_role_permissions(
+        self, info: strawberry.Info, input: SetRolePermissionsInput,
+        actor_company_user_id: strawberry.ID,
+    ) -> Optional[RolePermissionPlan]:
+        plan = role_service.previsualizar_permisos_rol(input, actor_company_user_id, usuario_actual(info))
+        return RolePermissionPlan(
+            role=Role(**plan["role"]),
+            current=[Permission(**row) for row in plan["current"]],
+            to_activate=[Permission(**row) for row in plan["to_activate"]],
+            to_deactivate=[Permission(**row) for row in plan["to_deactivate"]],
+            unchanged=[Permission(**row) for row in plan["unchanged"]],
+            final_count=plan["final_count"],
+        )
+
+    @strawberry.field
     def role_permissions(self, role_id: strawberry.ID) -> List[RolePermission]:
         return [RolePermission(**row) for row in role_service.listar_permisos_de_rol(role_id)]
 
 
 @strawberry.type
 class RoleMutation:
+
+    @strawberry.mutation
+    def set_role_permissions(
+        self, info: strawberry.Info, input: SetRolePermissionsInput,
+        actor_company_user_id: strawberry.ID,
+    ) -> Optional[RolePermissionUpdate]:
+        result = role_service.establecer_permisos_rol(input, actor_company_user_id, usuario_actual(info))
+        return RolePermissionUpdate(
+            role=Role(**result["role"]),
+            activated=[Permission(**row) for row in result["activated"]],
+            deactivated=[Permission(**row) for row in result["deactivated"]],
+            unchanged=[Permission(**row) for row in result["unchanged"]],
+            final_count=result["final_count"],
+            changed=result["changed"],
+        )
 
     @strawberry.mutation
     def create_role(

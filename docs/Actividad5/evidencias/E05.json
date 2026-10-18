@@ -1,0 +1,18 @@
+{
+  "after_S0": {
+    "relation_id": 31,
+    "role": "CAPTURISTA",
+    "permission": "accounts.write",
+    "relation_active": false,
+    "permission_active": true
+  },
+  "after_S1": {
+    "relation_id": 31,
+    "role": "CAPTURISTA",
+    "permission": "accounts.write",
+    "relation_active": true,
+    "permission_active": true
+  },
+  "same_relation_id": true,
+  "catalog_permission_still_active": true
+}

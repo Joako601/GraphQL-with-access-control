@@ -1,0 +1,305 @@
+{
+  "variants": [
+    {
+      "case": "role_missing",
+      "preview": {
+        "data": {
+          "previewRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El rol con id 99999999 no existe",
+            "locations": [
+              {
+                "line": 1,
+                "column": 51
+              }
+            ],
+            "path": [
+              "previewRolePermissions"
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El rol con id 99999999 no existe",
+            "locations": [
+              {
+                "line": 1,
+                "column": 54
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "sql_unchanged": true
+    },
+    {
+      "case": "admin_role",
+      "preview": {
+        "data": {
+          "previewRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "No se puede reemplazar la lista de permisos de ADMINISTRADOR",
+            "locations": [
+              {
+                "line": 1,
+                "column": 51
+              }
+            ],
+            "path": [
+              "previewRolePermissions"
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "No se puede reemplazar la lista de permisos de ADMINISTRADOR",
+            "locations": [
+              {
+                "line": 1,
+                "column": 54
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "sql_unchanged": true
+    },
+    {
+      "case": "permission_missing",
+      "preview": {
+        "data": {
+          "previewRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El permiso con id 99999999 no existe",
+            "locations": [
+              {
+                "line": 1,
+                "column": 51
+              }
+            ],
+            "path": [
+              "previewRolePermissions"
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El permiso con id 99999999 no existe",
+            "locations": [
+              {
+                "line": 1,
+                "column": 54
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "sql_unchanged": true
+    },
+    {
+      "case": "permission_duplicate",
+      "preview": {
+        "data": {
+          "previewRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "La lista contiene IDs de permiso repetidos",
+            "locations": [
+              {
+                "line": 1,
+                "column": 51
+              }
+            ],
+            "path": [
+              "previewRolePermissions"
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "La lista contiene IDs de permiso repetidos",
+            "locations": [
+              {
+                "line": 1,
+                "column": 54
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "sql_unchanged": true
+    },
+    {
+      "case": "role_inactive",
+      "preview": {
+        "data": {
+          "previewRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El rol CAPTURISTA está desactivado",
+            "locations": [
+              {
+                "line": 1,
+                "column": 51
+              }
+            ],
+            "path": [
+              "previewRolePermissions"
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El rol CAPTURISTA está desactivado",
+            "locations": [
+              {
+                "line": 1,
+                "column": 54
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "sql_unchanged": true
+    },
+    {
+      "case": "permission_inactive",
+      "preview": {
+        "data": {
+          "previewRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El permiso accounts.write está desactivado",
+            "locations": [
+              {
+                "line": 1,
+                "column": 51
+              }
+            ],
+            "path": [
+              "previewRolePermissions"
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "El permiso accounts.write está desactivado",
+            "locations": [
+              {
+                "line": 1,
+                "column": 54
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      },
+      "sql_unchanged": true
+    },
+    {
+      "case": "permission_duplicate_string_and_integer",
+      "input": {
+        "roleId": "3",
+        "permissionIds": [
+          "3",
+          3
+        ]
+      },
+      "preview": {
+        "data": {
+          "previewRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "La lista contiene IDs de permiso repetidos",
+            "locations": [
+              {
+                "line": 1,
+                "column": 51
+              }
+            ],
+            "path": [
+              "previewRolePermissions"
+            ]
+          }
+        ]
+      },
+      "sql_unchanged": true,
+      "apply": {
+        "data": {
+          "setRolePermissions": null
+        },
+        "errors": [
+          {
+            "message": "La lista contiene IDs de permiso repetidos",
+            "locations": [
+              {
+                "line": 1,
+                "column": 54
+              }
+            ],
+            "path": [
+              "setRolePermissions"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
