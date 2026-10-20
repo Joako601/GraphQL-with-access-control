@@ -17,7 +17,7 @@ from models.role_types import (
     RolePermissionUpdate,
 )
 from services import role_service
-from services.auth import usuario_actual
+from services.auth import leer_actor
 from services.validators import AppError
 
 
@@ -41,19 +41,17 @@ class RoleQuery:
 
     @strawberry.field
     def permission_catalog(
-        self, info: strawberry.Info, actor_company_user_id: strawberry.ID,
-        resource: Optional[PermissionResource] = None,
+        self, info: strawberry.Info, resource: Optional[PermissionResource] = None,
     ) -> List[Permission]:
         return [Permission(**row) for row in role_service.catalogo_permisos(
-            resource, actor_company_user_id, usuario_actual(info)
+            resource, leer_actor(info)
         )]
 
     @strawberry.field
     def preview_role_permissions(
         self, info: strawberry.Info, input: SetRolePermissionsInput,
-        actor_company_user_id: strawberry.ID,
     ) -> Optional[RolePermissionPlan]:
-        plan = role_service.previsualizar_permisos_rol(input, actor_company_user_id, usuario_actual(info))
+        plan = role_service.previsualizar_permisos_rol(input, leer_actor(info))
         return RolePermissionPlan(
             role=Role(**plan["role"]),
             current=[Permission(**row) for row in plan["current"]],
@@ -74,9 +72,8 @@ class RoleMutation:
     @strawberry.mutation
     def set_role_permissions(
         self, info: strawberry.Info, input: SetRolePermissionsInput,
-        actor_company_user_id: strawberry.ID,
     ) -> Optional[RolePermissionUpdate]:
-        result = role_service.establecer_permisos_rol(input, actor_company_user_id, usuario_actual(info))
+        result = role_service.establecer_permisos_rol(input, leer_actor(info))
         return RolePermissionUpdate(
             role=Role(**result["role"]),
             activated=[Permission(**row) for row in result["activated"]],
@@ -88,43 +85,42 @@ class RoleMutation:
 
     @strawberry.mutation
     def create_role(
-        self, info: strawberry.Info, actor_company_user_id: strawberry.ID, input: CreateRoleInput
+        self, info: strawberry.Info, input: CreateRoleInput
     ) -> Role:
-        return Role(**role_service.crear_rol(input, actor_company_user_id, usuario_actual(info)))
+        return Role(**role_service.crear_rol(input, leer_actor(info)))
 
     @strawberry.mutation
     def deactivate_role(
-        self, info: strawberry.Info, actor_company_user_id: strawberry.ID, id: strawberry.ID
+        self, info: strawberry.Info, id: strawberry.ID
     ) -> Role:
-        return Role(**role_service.desactivar_rol(id, actor_company_user_id, usuario_actual(info)))
+        return Role(**role_service.desactivar_rol(id, leer_actor(info)))
 
     @strawberry.mutation
     def create_permission(
-        self, info: strawberry.Info, actor_company_user_id: strawberry.ID, input: CreatePermissionInput
+        self, info: strawberry.Info, input: CreatePermissionInput
     ) -> Permission:
-        return Permission(**role_service.crear_permiso(input, actor_company_user_id, usuario_actual(info)))
+        return Permission(**role_service.crear_permiso(input, leer_actor(info)))
 
     @strawberry.mutation
     def assign_permission_to_role(
-        self, info: strawberry.Info, actor_company_user_id: strawberry.ID, input: AssignPermissionToRoleInput
+        self, info: strawberry.Info, input: AssignPermissionToRoleInput
     ) -> RolePermission:
-        row = role_service.asignar_permiso_a_rol(input, actor_company_user_id, usuario_actual(info))
+        row = role_service.asignar_permiso_a_rol(input, leer_actor(info))
         return RolePermission(**row)
 
     @strawberry.mutation
     def remove_permission_from_role(
         self,
         info: strawberry.Info,
-        actor_company_user_id: strawberry.ID,
         role_id: strawberry.ID,
         permission_id: strawberry.ID,
     ) -> bool:
         return role_service.quitar_permiso_de_rol(
-            role_id, permission_id, actor_company_user_id, usuario_actual(info)
+            role_id, permission_id, leer_actor(info)
         )
 
     @strawberry.mutation
     def assign_role(
-        self, info: strawberry.Info, actor_company_user_id: strawberry.ID, input: AssignRoleInput
+        self, info: strawberry.Info, input: AssignRoleInput
     ) -> CompanyUserRole:
-        return CompanyUserRole(**role_service.asignar_rol(input, actor_company_user_id, usuario_actual(info)))
+        return CompanyUserRole(**role_service.asignar_rol(input, leer_actor(info)))

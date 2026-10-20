@@ -19,7 +19,7 @@ from repositories import company_repository
 from schema.finance_schema import FinanceMutation, FinanceQuery
 from schema.role_schema import RoleMutation, RoleQuery
 from services import company_service, user_service
-from services.auth import usuario_actual
+from services.auth import leer_actor
 from services.validators import parse_id
 
 
@@ -41,9 +41,9 @@ class Query:
 
     @strawberry.field
     def company_users(
-        self, info: strawberry.Info, actor_company_user_id: strawberry.ID, company_id: strawberry.ID
+        self, info: strawberry.Info, company_id: strawberry.ID
     ) -> List[CompanyUser]:
-        rows = user_service.listar_usuarios(company_id, actor_company_user_id, usuario_actual(info))
+        rows = user_service.listar_usuarios(company_id, leer_actor(info))
         return [CompanyUser(**row) for row in rows]
 
 
@@ -86,15 +86,15 @@ class Mutation:
 
     @strawberry.mutation
     def create_company_user(
-        self, info: strawberry.Info, actor_company_user_id: strawberry.ID, input: CreateCompanyUserInput
+        self, info: strawberry.Info, input: CreateCompanyUserInput
     ) -> CompanyUser:
-        return CompanyUser(**user_service.crear_usuario(input, actor_company_user_id, usuario_actual(info)))
+        return CompanyUser(**user_service.crear_usuario(input, leer_actor(info)))
 
     @strawberry.mutation
     def deactivate_company_user(
-        self, info: strawberry.Info, actor_company_user_id: strawberry.ID, id: strawberry.ID
+        self, info: strawberry.Info, id: strawberry.ID
     ) -> CompanyUser:
-        return CompanyUser(**user_service.desactivar_usuario(id, actor_company_user_id, usuario_actual(info)))
+        return CompanyUser(**user_service.desactivar_usuario(id, leer_actor(info)))
 
 
 schema = strawberry.Schema(

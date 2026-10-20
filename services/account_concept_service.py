@@ -7,17 +7,17 @@ from services.permission_service import exigir_permiso
 from services.validators import AppError
 
 
-def _cuenta_y_concepto(account_id, concept_id, actor_company_user_id, current_user_id):
+def _cuenta_y_concepto(account_id, concept_id, actor):
     cuenta = obtener_cuenta_o_error(account_id)
     concepto = obtener_concepto_o_error(concept_id)
-    exigir_permiso(actor_company_user_id, "concepts.write", current_user_id, cuenta["company_id"])
+    exigir_permiso(actor, "concepts.write", cuenta["company_id"])
     if concepto["company_id"] != cuenta["company_id"]:
         raise AppError("La cuenta y el concepto pertenecen a empresas diferentes")
     return cuenta, concepto
 
 
-def asignar_concepto(data, actor_company_user_id, current_user_id):
-    cuenta, concepto = _cuenta_y_concepto(data.account_id, data.concept_id, actor_company_user_id, current_user_id)
+def asignar_concepto(data, actor):
+    cuenta, concepto = _cuenta_y_concepto(data.account_id, data.concept_id, actor)
     obtener_empresa_activa(cuenta["company_id"])
     if not cuenta["is_active"]:
         raise AppError(f"La cuenta «{cuenta['name']}» está inactiva")
@@ -36,8 +36,8 @@ def asignar_concepto(data, actor_company_user_id, current_user_id):
         raise AppError(f"El concepto «{concepto['name']}» ya está asignado a la cuenta «{cuenta['name']}»")
 
 
-def retirar_concepto(account_id, concept_id, actor_company_user_id, current_user_id):
-    cuenta, concepto = _cuenta_y_concepto(account_id, concept_id, actor_company_user_id, current_user_id)
+def retirar_concepto(account_id, concept_id, actor):
+    cuenta, concepto = _cuenta_y_concepto(account_id, concept_id, actor)
     relacion = repo.obtener_relacion(cuenta["id"], concepto["id"])
     if not relacion or not relacion["is_active"]:
         raise AppError(f"El concepto «{concepto['name']}» no está asignado a la cuenta «{cuenta['name']}»")
@@ -46,7 +46,7 @@ def retirar_concepto(account_id, concept_id, actor_company_user_id, current_user
     return True
 
 
-def listar_conceptos_de_cuenta(account_id, active_only, actor_company_user_id, current_user_id):
+def listar_conceptos_de_cuenta(account_id, active_only, actor):
     cuenta = obtener_cuenta_o_error(account_id)
-    exigir_permiso(actor_company_user_id, "concepts.read", current_user_id, cuenta["company_id"])
+    exigir_permiso(actor, "concepts.read", cuenta["company_id"])
     return repo.obtener_relaciones_de_cuenta(cuenta["id"], active_only is not False)
