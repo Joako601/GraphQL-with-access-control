@@ -58,6 +58,12 @@ def obtener_company_user(company_user_id):
         return connection.execute(sql, (company_user_id,)).fetchone()
 
 
+def obtener_membresias_de_usuario(user_id):
+    with get_connection() as connection:
+        sql = f"SELECT {CU_COLUMNS} FROM company_users WHERE user_id = %s ORDER BY id;"
+        return connection.execute(sql, (user_id,)).fetchall()
+
+
 def obtener_usuarios_de_empresa(company_id):
     with get_connection() as connection:
         sql = f"SELECT {CU_COLUMNS} FROM company_users WHERE company_id = %s ORDER BY id;"
