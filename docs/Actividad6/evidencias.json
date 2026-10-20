@@ -1,0 +1,115 @@
+{
+  "login_correcto_payload": {
+    "companyUserId": 3,
+    "companyId": 1,
+    "exp": 1792474405
+  },
+  "login_rechazado": {
+    "data": null,
+    "errors": [
+      "Correo o contraseña incorrectos"
+    ]
+  },
+  "casos": [
+    {
+      "caso": 1,
+      "token": "Ninguno",
+      "header": "(sin encabezado)",
+      "esperado": "se rechaza",
+      "obtenido": "se rechaza",
+      "error": "Falta el token: envía Authorization: Bearer <token>",
+      "filas_antes": "1",
+      "filas_despues": "1"
+    },
+    {
+      "caso": 2,
+      "token": "Maria, capturista",
+      "header": "Authorization: Bearer eyJhbGciOiJIUzI1...",
+      "esperado": "se guarda",
+      "obtenido": "se guarda",
+      "error": null,
+      "filas_antes": "0",
+      "filas_despues": "1"
+    },
+    {
+      "caso": 3,
+      "token": "Maria, capturista",
+      "header": "Authorization: Bearer eyJhbGciOiJIUzI1...",
+      "esperado": "se rechaza",
+      "obtenido": "se rechaza",
+      "error": "Permiso denegado: el rol CAPTURISTA no tiene el permiso accounts.write",
+      "filas_antes": "1",
+      "filas_despues": "1"
+    },
+    {
+      "caso": 4,
+      "token": "Luis, contador",
+      "header": "Authorization: Bearer eyJhbGciOiJIUzI1...",
+      "esperado": "se guarda",
+      "obtenido": "se guarda",
+      "error": null,
+      "filas_antes": "1",
+      "filas_despues": "2"
+    },
+    {
+      "caso": 5,
+      "token": "Pedro, consulta",
+      "header": "Authorization: Bearer eyJhbGciOiJIUzI1...",
+      "esperado": "se rechaza",
+      "obtenido": "se rechaza",
+      "error": "Permiso denegado: el rol CONSULTA no tiene el permiso transactions.write",
+      "filas_antes": "1",
+      "filas_despues": "1"
+    },
+    {
+      "caso": 6,
+      "token": "Ana",
+      "header": "Authorization: Bearer eyJhbGciOiJIUzI1...",
+      "esperado": "se guarda",
+      "obtenido": "se guarda",
+      "error": null,
+      "filas_antes": null,
+      "filas_despues": null
+    },
+    {
+      "caso": 7,
+      "token": "El mismo token de Pedro",
+      "header": "Authorization: Bearer eyJhbGciOiJIUzI1...",
+      "esperado": "se guarda",
+      "obtenido": "se guarda",
+      "error": null,
+      "filas_antes": "1",
+      "filas_despues": "2"
+    },
+    {
+      "caso": 8,
+      "token": "Beto, otra empresa",
+      "header": "Authorization: Bearer eyJhbGciOiJIUzI1...",
+      "esperado": "se rechaza",
+      "obtenido": "se rechaza",
+      "error": "El token no pertenece a esta empresa",
+      "filas_antes": null,
+      "filas_despues": null
+    },
+    {
+      "caso": "9a",
+      "token": "Token alterado",
+      "header": "Authorization: Bearer eyJhbGciOiJIUzI1...",
+      "esperado": "se rechaza",
+      "obtenido": "se rechaza",
+      "error": "El token no es válido o ya venció",
+      "filas_antes": "2",
+      "filas_despues": "2"
+    },
+    {
+      "caso": "9b",
+      "token": "Token vencido",
+      "header": "Authorization: Bearer eyJhbGciOiAiSFMy...",
+      "esperado": "se rechaza",
+      "obtenido": "se rechaza",
+      "error": "El token no es válido o ya venció",
+      "filas_antes": "2",
+      "filas_despues": "2"
+    }
+  ]
+}

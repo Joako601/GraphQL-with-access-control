@@ -12,14 +12,14 @@ from services.permission_service import exigir_permiso
 from services.validators import AppError, parse_id
 
 
-def crear_movimiento(data, actor_company_user_id, current_user_id):
+def crear_movimiento(data, actor):
     amount = validar_monto(data.amount)
     transaction_date = validar_fecha_con_zona(data.transaction_date)
 
     cuenta = obtener_cuenta_o_error(data.account_id)
     concepto = obtener_concepto_o_error(data.concept_id)
 
-    exigir_permiso(actor_company_user_id, "transactions.write", current_user_id, cuenta["company_id"])
+    exigir_permiso(actor, "transactions.write", cuenta["company_id"])
     if concepto["company_id"] != cuenta["company_id"]:
         raise AppError(f"El concepto «{concepto['name']}» no pertenece a la empresa de la cuenta")
 
@@ -50,15 +50,15 @@ def crear_movimiento(data, actor_company_user_id, current_user_id):
         transaction_type,
         amount,
         transaction_date,
-        current_user_id,  
+        actor["user_id"],
         texto_opcional(data.short_description),
         texto_opcional(data.long_description),
     )
 
 
-def listar_movimientos(account_id, transaction_type, limit, offset, actor_company_user_id, current_user_id):
+def listar_movimientos(account_id, transaction_type, limit, offset, actor):
     limit, offset = validar_paginacion(limit, offset)
-    membresia = exigir_permiso(actor_company_user_id, "transactions.read", current_user_id)
+    membresia = exigir_permiso(actor, "transactions.read")
     cuenta_id = None
     if account_id is not None:
         cuenta = obtener_cuenta_o_error(account_id)
@@ -70,19 +70,19 @@ def listar_movimientos(account_id, transaction_type, limit, offset, actor_compan
     return repo.obtener_movimientos(membresia["company_id"], cuenta_id, tipo, limit, offset)
 
 
-def eliminar_movimiento(transaction_id, actor_company_user_id, current_user_id):
+def eliminar_movimiento(transaction_id, actor):
     movimiento = repo.obtener_movimiento(parse_id(transaction_id, "ID de movimiento"))
     if movimiento is None:
         raise AppError(f"El movimiento con id {transaction_id} no existe")
-    exigir_permiso(actor_company_user_id, "transactions.write", current_user_id, movimiento["company_id"])
+    exigir_permiso(actor, "transactions.write", movimiento["company_id"])
     if not movimiento["is_active"]:
         raise AppError(f"El movimiento con id {transaction_id} ya fue eliminado")
     return repo.eliminar_movimiento(movimiento["id"])
 
 
-def obtener_saldo(account_id, actor_company_user_id, current_user_id):
+def obtener_saldo(account_id, actor):
     cuenta = obtener_cuenta_o_error(account_id)
-    exigir_permiso(actor_company_user_id, "transactions.read", current_user_id, cuenta["company_id"])
+    exigir_permiso(actor, "transactions.read", cuenta["company_id"])
     totales = repo.obtener_saldo(cuenta["id"])
     return {
         "account_id": cuenta["id"],

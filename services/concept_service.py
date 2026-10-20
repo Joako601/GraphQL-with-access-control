@@ -15,9 +15,9 @@ def obtener_concepto_o_error(concept_id):
     return concepto
 
 
-def crear_concepto(data, actor_company_user_id, current_user_id):
+def crear_concepto(data, actor):
     empresa = obtener_empresa_activa(data.company_id)
-    exigir_permiso(actor_company_user_id, "concepts.write", current_user_id, empresa["id"])
+    exigir_permiso(actor, "concepts.write", empresa["id"])
 
     name = validar_nombre(data.name)
     if repo.obtener_concepto_por_nombre(empresa["id"], name):
@@ -35,8 +35,8 @@ def crear_concepto(data, actor_company_user_id, current_user_id):
         raise AppError(f"Ya existe un concepto llamado «{name}» en esta empresa")
 
 
-def listar_conceptos(company_id, concept_type, active_only, actor_company_user_id, current_user_id):
+def listar_conceptos(company_id, concept_type, active_only, actor):
     empresa = obtener_empresa_o_error(company_id)
-    exigir_permiso(actor_company_user_id, "concepts.read", current_user_id, empresa["id"])
+    exigir_permiso(actor, "concepts.read", empresa["id"])
     tipo = concept_type.value if concept_type else None
     return repo.obtener_conceptos(empresa["id"], tipo, active_only)
