@@ -29,9 +29,9 @@ def obtener_cuenta_o_error(account_id):
     return cuenta
 
 
-def crear_cuenta(data, actor_company_user_id, current_user_id):
+def crear_cuenta(data, actor):
     empresa = obtener_empresa_activa(data.company_id)
-    exigir_permiso(actor_company_user_id, "accounts.write", current_user_id, empresa["id"])
+    exigir_permiso(actor, "accounts.write", empresa["id"])
 
     name = validar_nombre(data.name)
     account_number = validar_digitos(data.account_number, 4, 20, "El número de cuenta")
@@ -61,8 +61,8 @@ def crear_cuenta(data, actor_company_user_id, current_user_id):
         raise AppError(f"Ya existe una cuenta con el nombre «{name}» o con esa CLABE")
 
 
-def listar_cuentas(company_id, account_type, active_only, actor_company_user_id, current_user_id):
+def listar_cuentas(company_id, account_type, active_only, actor):
     empresa = obtener_empresa_o_error(company_id)
-    exigir_permiso(actor_company_user_id, "accounts.read", current_user_id, empresa["id"])
+    exigir_permiso(actor, "accounts.read", empresa["id"])
     tipo = account_type.value if account_type else None
     return repo.obtener_cuentas(empresa["id"], tipo, active_only)

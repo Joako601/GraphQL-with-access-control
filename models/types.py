@@ -108,6 +108,8 @@ class CompanyUser:
 class LoginInput:
     email: str
     password: str
+    # Solo elige la membresía si la persona está en varias empresas; el token copia el companyId de esa fila.
+    company_id: Optional[strawberry.ID] = None
 
 
 @strawberry.type

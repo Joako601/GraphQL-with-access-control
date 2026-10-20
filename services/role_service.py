@@ -14,18 +14,6 @@ PERMISSION_CODE_REGEX = re.compile(r"^[a-z][a-z_]*(\.[a-z][a-z_]*)+$")
 ADMIN_ROLE = "ADMINISTRADOR"
 
 
-def _membresia_del_actor(actor_company_user_id):
-    membresia = user_repository.obtener_company_user(parse_id(actor_company_user_id, "actorCompanyUserId"))
-    if membresia is None:
-        raise AppError(f"La membresía con id {actor_company_user_id} no existe")
-    return membresia
-
-
-def _exigir_roles_write(actor_company_user_id, current_user_id):
-    membresia = _membresia_del_actor(actor_company_user_id)
-    exigir_permiso(membresia["id"], "roles.write", current_user_id, membresia["company_id"])
-
-
 def obtener_rol_o_error(role_id):
     rol = repo.obtener_rol(parse_id(role_id, "ID de rol"))
     if rol is None:
@@ -37,12 +25,12 @@ def listar_roles(active_only):
     return repo.obtener_roles(active_only)
 
 
-def crear_rol(data, actor_company_user_id, current_user_id):
+def crear_rol(data, actor):
     code = (data.code or "").strip().upper()
     if not ROLE_CODE_REGEX.match(code):
         raise AppError("El código del rol debe usar mayúsculas, dígitos o guion bajo, por ejemplo AUDITOR")
     name = validar_nombre(data.name)
-    _exigir_roles_write(actor_company_user_id, current_user_id)
+    exigir_permiso(actor, "roles.write")
 
     if repo.obtener_rol_por_codigo(code):
         raise AppError(f"Ya existe un rol con el código {code}")
@@ -52,9 +40,9 @@ def crear_rol(data, actor_company_user_id, current_user_id):
         raise AppError(f"Ya existe un rol con el código {code}")
 
 
-def desactivar_rol(role_id, actor_company_user_id, current_user_id):
+def desactivar_rol(role_id, actor):
     rol = obtener_rol_o_error(role_id)
-    _exigir_roles_write(actor_company_user_id, current_user_id)
+    exigir_permiso(actor, "roles.write")
     if rol["code"] == ADMIN_ROLE:
         raise AppError("El rol ADMINISTRADOR no se puede desactivar")
     if not rol["is_active"]:
@@ -82,9 +70,8 @@ RESOURCE_PREFIXES = {
 }
 
 
-def catalogo_permisos(resource, actor_company_user_id, current_user_id):
-    actor = _membresia_del_actor(actor_company_user_id)
-    exigir_permiso(actor["id"], "roles.read", current_user_id, actor["company_id"])
+def catalogo_permisos(resource, actor):
+    exigir_permiso(actor, "roles.read")
     key = getattr(resource, "value", resource)
     prefix = RESOURCE_PREFIXES.get(key) if key is not None else None
     if key is not None and prefix is None:
@@ -125,15 +112,13 @@ def _validar_propuesta(data):
     }
 
 
-def previsualizar_permisos_rol(data, actor_company_user_id, current_user_id):
-    actor = _membresia_del_actor(actor_company_user_id)
-    exigir_permiso(actor["id"], "roles.read", current_user_id, actor["company_id"])
+def previsualizar_permisos_rol(data, actor):
+    exigir_permiso(actor, "roles.read")
     return _validar_propuesta(data)
 
 
-def establecer_permisos_rol(data, actor_company_user_id, current_user_id):
-    actor = _membresia_del_actor(actor_company_user_id)
-    exigir_permiso(actor["id"], "roles.write", current_user_id, actor["company_id"])
+def establecer_permisos_rol(data, actor):
+    exigir_permiso(actor, "roles.write")
     plan = _validar_propuesta(data)
     if plan["to_activate"] or plan["to_deactivate"]:
         repo.aplicar_configuracion_rol(plan["role"]["id"], plan["desired"], plan["current"])
@@ -147,12 +132,12 @@ def establecer_permisos_rol(data, actor_company_user_id, current_user_id):
     }
 
 
-def crear_permiso(data, actor_company_user_id, current_user_id):
+def crear_permiso(data, actor):
     code = (data.code or "").strip().lower()
     if not PERMISSION_CODE_REGEX.match(code):
         raise AppError("El código del permiso se escribe recurso.accion, por ejemplo reports.read")
     name = validar_nombre(data.name)
-    _exigir_roles_write(actor_company_user_id, current_user_id)
+    exigir_permiso(actor, "roles.write")
 
     if repo.obtener_permiso_por_codigo(code):
         raise AppError(f"Ya existe un permiso con el código {code}")
@@ -167,10 +152,10 @@ def listar_permisos_de_rol(role_id):
     return repo.obtener_permisos_de_rol(rol["id"])
 
 
-def asignar_permiso_a_rol(data, actor_company_user_id, current_user_id):
+def asignar_permiso_a_rol(data, actor):
     rol = obtener_rol_o_error(data.role_id)
     permiso = obtener_permiso_o_error(data.permission_id)
-    _exigir_roles_write(actor_company_user_id, current_user_id)
+    exigir_permiso(actor, "roles.write")
     if not rol["is_active"]:
         raise AppError(f"El rol {rol['code']} está desactivado")
     if not permiso["is_active"]:
@@ -187,10 +172,10 @@ def asignar_permiso_a_rol(data, actor_company_user_id, current_user_id):
         raise AppError(f"El rol {rol['code']} ya tiene el permiso {permiso['code']}")
 
 
-def quitar_permiso_de_rol(role_id, permission_id, actor_company_user_id, current_user_id):
+def quitar_permiso_de_rol(role_id, permission_id, actor):
     rol = obtener_rol_o_error(role_id)
     permiso = obtener_permiso_o_error(permission_id)
-    _exigir_roles_write(actor_company_user_id, current_user_id)
+    exigir_permiso(actor, "roles.write")
     if rol["code"] == ADMIN_ROLE and permiso["code"] == "roles.write":
         raise AppError("No se puede quitar roles.write al rol ADMINISTRADOR: nadie podría volver a configurar el acceso")
 
@@ -208,13 +193,13 @@ def obtener_rol_por_codigo_o_error(code):
     return rol
 
 
-def asignar_rol(data, actor_company_user_id, current_user_id):
+def asignar_rol(data, actor):
     membresia = user_repository.obtener_company_user(parse_id(data.company_user_id, "ID de membresía"))
     if membresia is None:
         raise AppError(f"La membresía con id {data.company_user_id} no existe")
     rol = obtener_rol_o_error(data.role_id)
 
-    exigir_permiso(actor_company_user_id, "roles.write", current_user_id, membresia["company_id"])
+    exigir_permiso(actor, "roles.write", membresia["company_id"])
 
     if not membresia["is_active"]:
         raise AppError("La membresía está inactiva")
