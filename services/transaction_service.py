@@ -78,17 +78,3 @@ def eliminar_movimiento(transaction_id, actor):
     if not movimiento["is_active"]:
         raise AppError(f"El movimiento con id {transaction_id} ya fue eliminado")
     return repo.eliminar_movimiento(movimiento["id"])
-
-
-def obtener_saldo(account_id, actor):
-    cuenta = obtener_cuenta_o_error(account_id)
-    exigir_permiso(actor, "transactions.read", cuenta["company_id"])
-    totales = repo.obtener_saldo(cuenta["id"])
-    return {
-        "account_id": cuenta["id"],
-        "total_income": totales["total_income"],
-        "total_expense": totales["total_expense"],
-       
-        "balance": totales["total_income"] - totales["total_expense"],
-        "transaction_count": totales["transaction_count"],
-    }

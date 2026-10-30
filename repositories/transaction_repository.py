@@ -63,17 +63,3 @@ def eliminar_movimiento(transaction_id):
             RETURNING {COLUMNS};
         """
         return connection.execute(sql, (transaction_id,)).fetchone()
-
-
-# Balance = SUM(INCOME) - SUM(EXPENSE) de los movimientos activos
-def obtener_saldo(account_id):
-    with get_connection() as connection:
-        sql = """
-            SELECT
-                COALESCE(SUM(amount) FILTER (WHERE transaction_type = 'INCOME'), 0.00) AS total_income,
-                COALESCE(SUM(amount) FILTER (WHERE transaction_type = 'EXPENSE'), 0.00) AS total_expense,
-                COUNT(*) AS transaction_count
-            FROM transactions
-            WHERE account_id = %s AND is_active = TRUE;
-        """
-        return connection.execute(sql, (account_id,)).fetchone()
