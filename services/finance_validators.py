@@ -1,3 +1,4 @@
+from datetime import timezone
 from decimal import Decimal, InvalidOperation
 
 from services.validators import AppError
@@ -41,10 +42,12 @@ def validar_monto(amount):
 
 
 def validar_fecha_con_zona(value):
-    
-    if value is not None and value.tzinfo is None:
+    if value is None:
+        return None
+    if value.tzinfo is None:
         raise AppError("La fecha del movimiento debe incluir la zona horaria, por ejemplo 2026-09-01T10:00:00-06:00")
-    return value
+    # Se guarda en UTC para que los límites de día de los balances (también UTC) coincidan.
+    return value.astimezone(timezone.utc)
 
 
 def validar_paginacion(limit, offset):
