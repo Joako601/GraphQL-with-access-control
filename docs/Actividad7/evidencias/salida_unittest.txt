@@ -1,0 +1,15 @@
+test_caja_profit_negativo_y_en_rojo (pruebas.test_actividad7_balances.CuentaTest.test_caja_profit_negativo_y_en_rojo) ... ok
+test_cero_no_es_rojo_y_centavos_exactos (pruebas.test_actividad7_balances.CuentaTest.test_cero_no_es_rojo_y_centavos_exactos) ... ok
+test_profit_negativo_con_saldo_previo_no_es_rojo (pruebas.test_actividad7_balances.CuentaTest.test_profit_negativo_con_saldo_previo_no_es_rojo) ... ok
+test_cuenta_ajena_o_inexistente_mismo_error (pruebas.test_actividad7_balances.GeneralTest.test_cuenta_ajena_o_inexistente_mismo_error) ... ok
+test_empresa_sin_cuentas (pruebas.test_actividad7_balances.GeneralTest.test_empresa_sin_cuentas) ... ok
+test_tabla_de_referencia (pruebas.test_actividad7_balances.GeneralTest.test_tabla_de_referencia) ... ok
+test_dias_completos_en_utc_con_fin_excluido (pruebas.test_actividad7_balances.PeriodoTest.test_dias_completos_en_utc_con_fin_excluido) ... ok
+test_from_posterior_a_to_se_rechaza (pruebas.test_actividad7_balances.PeriodoTest.test_from_posterior_a_to_se_rechaza) ... ok
+test_transaction_date_se_normaliza_a_utc (pruebas.test_actividad7_balances.PeriodoTest.test_transaction_date_se_normaliza_a_utc) ... ok
+test_un_solo_dia_es_valido (pruebas.test_actividad7_balances.PeriodoTest.test_un_solo_dia_es_valido) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.003s
+
+OK

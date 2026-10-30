@@ -1,0 +1,811 @@
+{
+  "ejecutado": "2026-10-30T13:21:15",
+  "sufijo": "6ae79f",
+  "empresas": {
+    "A": "27",
+    "B": "28",
+    "C": "29",
+    "D": "30",
+    "E": "31"
+  },
+  "casos": [
+    {
+      "caso": "B01",
+      "prueba": "Banco, Caja, Ahorro y general del 26 al 30",
+      "esperado": {
+        "cuentas": {
+          "Banco": {
+            "openingBalance": "1000.00",
+            "totalIncome": "3000.00",
+            "totalExpense": "2200.00",
+            "profit": "800.00",
+            "closingBalance": "1800.00",
+            "isInRed": false
+          },
+          "Caja": {
+            "openingBalance": "0.00",
+            "totalIncome": "500.00",
+            "totalExpense": "700.00",
+            "profit": "-200.00",
+            "closingBalance": "-200.00",
+            "isInRed": true
+          },
+          "Ahorro": {
+            "openingBalance": "0.00",
+            "totalIncome": "0.00",
+            "totalExpense": "0.00",
+            "profit": "0.00",
+            "closingBalance": "0.00",
+            "isInRed": false
+          }
+        },
+        "general": {
+          "currency": "MXN",
+          "openingBalance": "1000.00",
+          "totalIncome": "3500.00",
+          "totalExpense": "2900.00",
+          "profit": "600.00",
+          "closingBalance": "1600.00",
+          "isInRed": false,
+          "accountsInRed": 1
+        }
+      },
+      "obtenido": {
+        "cuentas": {
+          "Banco": {
+            "accountId": "52",
+            "accountName": "Banco",
+            "isActive": true,
+            "openingBalance": "1000.00",
+            "totalIncome": "3000.00",
+            "totalExpense": "2200.00",
+            "profit": "800.00",
+            "closingBalance": "1800.00",
+            "isInRed": false
+          },
+          "Caja": {
+            "accountId": "53",
+            "accountName": "Caja",
+            "isActive": true,
+            "openingBalance": "0.00",
+            "totalIncome": "500.00",
+            "totalExpense": "700.00",
+            "profit": "-200.00",
+            "closingBalance": "-200.00",
+            "isInRed": true
+          },
+          "Ahorro": {
+            "accountId": "54",
+            "accountName": "Ahorro",
+            "isActive": true,
+            "openingBalance": "0.00",
+            "totalIncome": "0.00",
+            "totalExpense": "0.00",
+            "profit": "0.00",
+            "closingBalance": "0.00",
+            "isInRed": false
+          }
+        },
+        "general": {
+          "companyId": "27",
+          "currency": "MXN",
+          "fromDate": "2026-10-26",
+          "toDate": "2026-10-30",
+          "openingBalance": "1000.00",
+          "totalIncome": "3500.00",
+          "totalExpense": "2900.00",
+          "profit": "600.00",
+          "closingBalance": "1600.00",
+          "isInRed": false,
+          "accountsInRed": 1,
+          "accounts": [
+            {
+              "accountId": "52",
+              "accountName": "Banco",
+              "isActive": true,
+              "openingBalance": "1000.00",
+              "totalIncome": "3000.00",
+              "totalExpense": "2200.00",
+              "profit": "800.00",
+              "closingBalance": "1800.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "53",
+              "accountName": "Caja",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "500.00",
+              "totalExpense": "700.00",
+              "profit": "-200.00",
+              "closingBalance": "-200.00",
+              "isInRed": true
+            },
+            {
+              "accountId": "54",
+              "accountName": "Ahorro",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "0.00",
+              "totalExpense": "0.00",
+              "profit": "0.00",
+              "closingBalance": "0.00",
+              "isInRed": false
+            }
+          ]
+        },
+        "filas_antes": "6 / 2026-10-30 19:19:41.419715+00",
+        "filas_despues": "6 / 2026-10-30 19:19:41.419715+00"
+      },
+      "paso": true,
+      "capturas": [
+        "01.png",
+        "02.png",
+        "03.png",
+        "04.png"
+      ]
+    },
+    {
+      "caso": "B02",
+      "prueba": "Banco solo el 28",
+      "esperado": {
+        "openingBalance": "2800.00",
+        "totalIncome": "0.00",
+        "totalExpense": "1000.00",
+        "profit": "-1000.00",
+        "closingBalance": "1800.00",
+        "isInRed": false
+      },
+      "obtenido": {
+        "accountId": "52",
+        "accountName": "Banco",
+        "isActive": true,
+        "openingBalance": "2800.00",
+        "totalIncome": "0.00",
+        "totalExpense": "1000.00",
+        "profit": "-1000.00",
+        "closingBalance": "1800.00",
+        "isInRed": false
+      },
+      "paso": true,
+      "capturas": [
+        "05.png"
+      ]
+    },
+    {
+      "caso": "B03",
+      "prueba": "Empresa sin cuentas",
+      "esperado": {
+        "openingBalance": "0.00",
+        "totalIncome": "0.00",
+        "totalExpense": "0.00",
+        "profit": "0.00",
+        "closingBalance": "0.00",
+        "isInRed": false,
+        "accountsInRed": 0,
+        "accounts": []
+      },
+      "obtenido": {
+        "companyId": "29",
+        "currency": "MXN",
+        "fromDate": "2026-10-26",
+        "toDate": "2026-10-30",
+        "openingBalance": "0.00",
+        "totalIncome": "0.00",
+        "totalExpense": "0.00",
+        "profit": "0.00",
+        "closingBalance": "0.00",
+        "isInRed": false,
+        "accountsInRed": 0,
+        "accounts": []
+      },
+      "paso": true,
+      "capturas": [
+        "06.png"
+      ]
+    },
+    {
+      "caso": "B04",
+      "prueba": "Movimientos en los cuatro límites del período",
+      "esperado": {
+        "openingBalance": "10.00",
+        "totalIncome": "50.00",
+        "closingBalance": "60.00"
+      },
+      "obtenido": {
+        "accountId": "56",
+        "accountName": "Limites",
+        "isActive": true,
+        "openingBalance": "10.00",
+        "totalIncome": "50.00",
+        "totalExpense": "0.00",
+        "profit": "50.00",
+        "closingBalance": "60.00",
+        "isInRed": false
+      },
+      "paso": true,
+      "capturas": [
+        "07.png"
+      ]
+    },
+    {
+      "caso": "B05",
+      "prueba": "Movimiento del 27 capturado después",
+      "esperado": {
+        "27": {
+          "totalIncome": "75.00"
+        },
+        "28": {
+          "openingBalance": "75.00"
+        }
+      },
+      "obtenido": {
+        "movimiento": {
+          "id": "108",
+          "amount": "75.00",
+          "transactionDate": "2026-10-27T12:00:00+00:00",
+          "capturedAt": "2026-10-30T19:20:00.800022+00:00"
+        },
+        "27": {
+          "accountId": "57",
+          "accountName": "Captura tardia",
+          "isActive": true,
+          "openingBalance": "0.00",
+          "totalIncome": "75.00",
+          "totalExpense": "0.00",
+          "profit": "75.00",
+          "closingBalance": "75.00",
+          "isInRed": false
+        },
+        "28": {
+          "accountId": "57",
+          "accountName": "Captura tardia",
+          "isActive": true,
+          "openingBalance": "75.00",
+          "totalIncome": "0.00",
+          "totalExpense": "0.00",
+          "profit": "0.00",
+          "closingBalance": "75.00",
+          "isInRed": false
+        }
+      },
+      "paso": true,
+      "capturas": [
+        "08.png",
+        "09.png"
+      ]
+    },
+    {
+      "caso": "B06",
+      "prueba": "0.10 + 0.20 - 0.30",
+      "esperado": {
+        "totalIncome": "0.30",
+        "totalExpense": "0.30",
+        "profit": "0.00",
+        "closingBalance": "0.00",
+        "isInRed": false
+      },
+      "obtenido": {
+        "accountId": "58",
+        "accountName": "Centavos",
+        "isActive": true,
+        "openingBalance": "0.00",
+        "totalIncome": "0.30",
+        "totalExpense": "0.30",
+        "profit": "0.00",
+        "closingBalance": "0.00",
+        "isInRed": false
+      },
+      "paso": true,
+      "capturas": [
+        "10.png"
+      ]
+    },
+    {
+      "caso": "B07",
+      "prueba": "Desactivar un movimiento de 50.00",
+      "esperado": {
+        "antes": "150.00",
+        "despues": "100.00"
+      },
+      "obtenido": {
+        "antes": {
+          "accountId": "59",
+          "accountName": "Anulable",
+          "isActive": true,
+          "openingBalance": "0.00",
+          "totalIncome": "150.00",
+          "totalExpense": "0.00",
+          "profit": "150.00",
+          "closingBalance": "150.00",
+          "isInRed": false
+        },
+        "despues": {
+          "accountId": "59",
+          "accountName": "Anulable",
+          "isActive": true,
+          "openingBalance": "0.00",
+          "totalIncome": "100.00",
+          "totalExpense": "0.00",
+          "profit": "100.00",
+          "closingBalance": "100.00",
+          "isInRed": false
+        }
+      },
+      "paso": true,
+      "capturas": [
+        "11.png",
+        "12.png",
+        "13.png"
+      ]
+    },
+    {
+      "caso": "B08",
+      "prueba": "Cuenta desactivada con movimientos",
+      "esperado": {
+        "isActive": false,
+        "closingBalance": "200.00",
+        "general": "sin cambios"
+      },
+      "obtenido": {
+        "cuenta": {
+          "accountId": "60",
+          "accountName": "Cerrada",
+          "isActive": false,
+          "openingBalance": "0.00",
+          "totalIncome": "200.00",
+          "totalExpense": "0.00",
+          "profit": "200.00",
+          "closingBalance": "200.00",
+          "isInRed": false
+        },
+        "general_antes": "435.00",
+        "general_despues": "435.00"
+      },
+      "paso": true,
+      "capturas": [
+        "14.png",
+        "15.png",
+        "16.png"
+      ]
+    },
+    {
+      "caso": "B09",
+      "prueba": "Otro concepto en una cuenta sin movimientos nuevos",
+      "esperado": "general idéntico",
+      "obtenido": {
+        "antes": {
+          "companyId": "30",
+          "currency": "MXN",
+          "fromDate": "2026-10-26",
+          "toDate": "2026-10-30",
+          "openingBalance": "10.00",
+          "totalIncome": "425.30",
+          "totalExpense": "0.30",
+          "profit": "425.00",
+          "closingBalance": "435.00",
+          "isInRed": false,
+          "accountsInRed": 0,
+          "accounts": [
+            {
+              "accountId": "56",
+              "accountName": "Limites",
+              "isActive": true,
+              "openingBalance": "10.00",
+              "totalIncome": "50.00",
+              "totalExpense": "0.00",
+              "profit": "50.00",
+              "closingBalance": "60.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "57",
+              "accountName": "Captura tardia",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "75.00",
+              "totalExpense": "0.00",
+              "profit": "75.00",
+              "closingBalance": "75.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "58",
+              "accountName": "Centavos",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "0.30",
+              "totalExpense": "0.30",
+              "profit": "0.00",
+              "closingBalance": "0.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "59",
+              "accountName": "Anulable",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "100.00",
+              "totalExpense": "0.00",
+              "profit": "100.00",
+              "closingBalance": "100.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "60",
+              "accountName": "Cerrada",
+              "isActive": false,
+              "openingBalance": "0.00",
+              "totalIncome": "200.00",
+              "totalExpense": "0.00",
+              "profit": "200.00",
+              "closingBalance": "200.00",
+              "isInRed": false
+            }
+          ]
+        },
+        "despues": {
+          "companyId": "30",
+          "currency": "MXN",
+          "fromDate": "2026-10-26",
+          "toDate": "2026-10-30",
+          "openingBalance": "10.00",
+          "totalIncome": "425.30",
+          "totalExpense": "0.30",
+          "profit": "425.00",
+          "closingBalance": "435.00",
+          "isInRed": false,
+          "accountsInRed": 0,
+          "accounts": [
+            {
+              "accountId": "56",
+              "accountName": "Limites",
+              "isActive": true,
+              "openingBalance": "10.00",
+              "totalIncome": "50.00",
+              "totalExpense": "0.00",
+              "profit": "50.00",
+              "closingBalance": "60.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "57",
+              "accountName": "Captura tardia",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "75.00",
+              "totalExpense": "0.00",
+              "profit": "75.00",
+              "closingBalance": "75.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "58",
+              "accountName": "Centavos",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "0.30",
+              "totalExpense": "0.30",
+              "profit": "0.00",
+              "closingBalance": "0.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "59",
+              "accountName": "Anulable",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "100.00",
+              "totalExpense": "0.00",
+              "profit": "100.00",
+              "closingBalance": "100.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "60",
+              "accountName": "Cerrada",
+              "isActive": false,
+              "openingBalance": "0.00",
+              "totalIncome": "200.00",
+              "totalExpense": "0.00",
+              "profit": "200.00",
+              "closingBalance": "200.00",
+              "isInRed": false
+            }
+          ]
+        }
+      },
+      "paso": true,
+      "capturas": [
+        "17.png",
+        "18.png"
+      ]
+    },
+    {
+      "caso": "B10",
+      "prueba": "fromDate > toDate y fecha inexistente",
+      "esperado": "error sin balance",
+      "obtenido": [
+        {
+          "data": null,
+          "errors": [
+            "fromDate no puede ser posterior a toDate"
+          ]
+        },
+        {
+          "data": null,
+          "errors": [
+            "fromDate no puede ser posterior a toDate"
+          ]
+        },
+        {
+          "data": null,
+          "errors": [
+            "Variable '$f' has invalid value: Value cannot represent a Date: \"2026-02-30\". day is out of range for month"
+          ]
+        }
+      ],
+      "paso": true,
+      "capturas": [
+        "19.png",
+        "20.png",
+        "21.png"
+      ]
+    },
+    {
+      "caso": "B11",
+      "prueba": "Sin token, alterado y vencido",
+      "esperado": "rechazo en ambas consultas",
+      "obtenido": {
+        "sin token": [
+          {
+            "data": null,
+            "errors": [
+              "Falta el token: envía Authorization: Bearer <token>"
+            ]
+          },
+          {
+            "data": null,
+            "errors": [
+              "Falta el token: envía Authorization: Bearer <token>"
+            ]
+          }
+        ],
+        "alterado": [
+          {
+            "data": null,
+            "errors": [
+              "El token no es válido o ya venció"
+            ]
+          },
+          {
+            "data": null,
+            "errors": [
+              "El token no es válido o ya venció"
+            ]
+          }
+        ],
+        "vencido": [
+          {
+            "data": null,
+            "errors": [
+              "El token no es válido o ya venció"
+            ]
+          },
+          {
+            "data": null,
+            "errors": [
+              "El token no es válido o ya venció"
+            ]
+          }
+        ]
+      },
+      "paso": true,
+      "capturas": [
+        "22.png",
+        "23.png",
+        "24.png",
+        "25.png",
+        "26.png",
+        "27.png"
+      ]
+    },
+    {
+      "caso": "B12",
+      "prueba": "Token de A con cuenta de B; general de A",
+      "esperado": {
+        "error": "Cuenta no disponible",
+        "general": "solo cuentas de A"
+      },
+      "obtenido": {
+        "ajena": {
+          "data": null,
+          "errors": [
+            "Cuenta no disponible"
+          ]
+        },
+        "inexistente": {
+          "data": null,
+          "errors": [
+            "Cuenta no disponible"
+          ]
+        },
+        "cuentas_general_A": [
+          "Banco",
+          "Caja",
+          "Ahorro"
+        ]
+      },
+      "paso": true,
+      "capturas": [
+        "28.png",
+        "29.png",
+        "30.png"
+      ]
+    },
+    {
+      "caso": "B13",
+      "prueba": "Rol CONSULTA lee balances pero no captura",
+      "esperado": {
+        "lectura": {
+          "currency": "MXN",
+          "openingBalance": "1000.00",
+          "totalIncome": "3500.00",
+          "totalExpense": "2900.00",
+          "profit": "600.00",
+          "closingBalance": "1600.00",
+          "isInRed": false,
+          "accountsInRed": 1
+        },
+        "captura": "rechazada",
+        "filas": "iguales"
+      },
+      "obtenido": {
+        "lectura": {
+          "companyId": "27",
+          "currency": "MXN",
+          "fromDate": "2026-10-26",
+          "toDate": "2026-10-30",
+          "openingBalance": "1000.00",
+          "totalIncome": "3500.00",
+          "totalExpense": "2900.00",
+          "profit": "600.00",
+          "closingBalance": "1600.00",
+          "isInRed": false,
+          "accountsInRed": 1,
+          "accounts": [
+            {
+              "accountId": "52",
+              "accountName": "Banco",
+              "isActive": true,
+              "openingBalance": "1000.00",
+              "totalIncome": "3000.00",
+              "totalExpense": "2200.00",
+              "profit": "800.00",
+              "closingBalance": "1800.00",
+              "isInRed": false
+            },
+            {
+              "accountId": "53",
+              "accountName": "Caja",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "500.00",
+              "totalExpense": "700.00",
+              "profit": "-200.00",
+              "closingBalance": "-200.00",
+              "isInRed": true
+            },
+            {
+              "accountId": "54",
+              "accountName": "Ahorro",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "0.00",
+              "totalExpense": "0.00",
+              "profit": "0.00",
+              "closingBalance": "0.00",
+              "isInRed": false
+            }
+          ]
+        },
+        "captura": {
+          "data": null,
+          "errors": [
+            "Permiso denegado: el rol CONSULTA no tiene el permiso transactions.write"
+          ]
+        },
+        "filas_antes": "6",
+        "filas_despues": "6"
+      },
+      "paso": true,
+      "capturas": [
+        "31.png",
+        "32.png"
+      ]
+    },
+    {
+      "caso": "B14",
+      "prueba": "Retirar transactions.read al rol de prueba y restaurarlo",
+      "esperado": "lee / rechaza ambas / lee",
+      "obtenido": {
+        "con_permiso": true,
+        "sin_permiso": [
+          {
+            "data": null,
+            "errors": [
+              "Permiso denegado: el rol BALANCES_6AE79F no tiene el permiso transactions.read"
+            ]
+          },
+          {
+            "data": null,
+            "errors": [
+              "Permiso denegado: el rol BALANCES_6AE79F no tiene el permiso transactions.read"
+            ]
+          }
+        ],
+        "restaurado": true
+      },
+      "paso": true,
+      "capturas": [
+        "33.png",
+        "34.png",
+        "35.png",
+        "36.png"
+      ]
+    },
+    {
+      "caso": "B15",
+      "prueba": "Egreso de 50.00 en cuenta vacía",
+      "esperado": {
+        "closingBalance": "-50.00",
+        "isInRed": true,
+        "accountsInRed": 1
+      },
+      "obtenido": {
+        "cuenta": {
+          "accountId": "61",
+          "accountName": "Vacia",
+          "isActive": true,
+          "openingBalance": "0.00",
+          "totalIncome": "0.00",
+          "totalExpense": "50.00",
+          "profit": "-50.00",
+          "closingBalance": "-50.00",
+          "isInRed": true
+        },
+        "general": {
+          "companyId": "31",
+          "currency": "MXN",
+          "fromDate": "2026-10-26",
+          "toDate": "2026-10-30",
+          "openingBalance": "0.00",
+          "totalIncome": "0.00",
+          "totalExpense": "50.00",
+          "profit": "-50.00",
+          "closingBalance": "-50.00",
+          "isInRed": true,
+          "accountsInRed": 1,
+          "accounts": [
+            {
+              "accountId": "61",
+              "accountName": "Vacia",
+              "isActive": true,
+              "openingBalance": "0.00",
+              "totalIncome": "0.00",
+              "totalExpense": "50.00",
+              "profit": "-50.00",
+              "closingBalance": "-50.00",
+              "isInRed": true
+            }
+          ]
+        }
+      },
+      "paso": true,
+      "capturas": [
+        "37.png",
+        "38.png"
+      ]
+    }
+  ]
+}
