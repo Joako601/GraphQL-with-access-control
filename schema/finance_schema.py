@@ -1,10 +1,11 @@
+from datetime import date
 from typing import List, Optional
 
 import strawberry
 
+from models.balance_types import AccountBalance, GeneralBalance, general_balance_from_dict
 from models.finance_types import (
     Account,
-    AccountBalance,
     AccountConcept,
     AccountType,
     AssignConceptToAccountInput,
@@ -19,7 +20,13 @@ from models.finance_types import (
     concept_from_row,
     transaction_from_row,
 )
-from services import account_concept_service, account_service, concept_service, transaction_service
+from services import (
+    account_concept_service,
+    account_service,
+    balance_service,
+    concept_service,
+    transaction_service,
+)
 from services.auth import leer_actor
 
 
@@ -86,12 +93,19 @@ class FinanceQuery:
         )
         return [transaction_from_row(row) for row in rows]
 
+    # ---------- Actividad 7: balances ----------
+
     @strawberry.field
     def account_balance(
-        self, info: strawberry.Info, account_id: strawberry.ID
+        self, info: strawberry.Info, account_id: strawberry.ID, from_date: date, to_date: date
     ) -> AccountBalance:
-        saldo = transaction_service.obtener_saldo(account_id, leer_actor(info))
-        return AccountBalance(**saldo)
+        actor = leer_actor(info)
+        return AccountBalance(**balance_service.balance_de_cuenta(account_id, from_date, to_date, actor))
+
+    @strawberry.field
+    def general_balance(self, info: strawberry.Info, from_date: date, to_date: date) -> GeneralBalance:
+        actor = leer_actor(info)
+        return general_balance_from_dict(balance_service.balance_general(from_date, to_date, actor))
 
 
 # ==================================================

@@ -188,17 +188,3 @@ class CreateTransactionInput:
     transaction_date: Optional[Time] = None
     short_description: Optional[str] = None
     long_description: Optional[str] = None
-
-
-# Balance = SUM(INCOME) - SUM(EXPENSE) de los movimientos activos de una cuenta
-@strawberry.type
-class AccountBalance:
-    account_id: strawberry.ID
-    total_income: Decimal
-    total_expense: Decimal
-    balance: Decimal
-    transaction_count: int
-
-    @strawberry.field
-    def account(self) -> Account:
-        return account_from_row(account_repository.obtener_cuenta(self.account_id))
