@@ -65,7 +65,7 @@ El índice `transactions_account_idx (account_id, transaction_date DESC)` ya exi
    ```
 
 Los pasos 4 y 5 ejecutan los mismos casos; el 5 además corre cada consulta en GraphiQL, guarda una captura por
-operación con los nombres del equipo y arma `Evidencias Unidad II Actividad 7 - Balances.pdf`.
+operación con los nombres del equipo y arma `Evidencias Unidad II Actividad 7 - Balances.pdf` en la raíz del repositorio.
 
 El paso 4 usa `pruebas/actividad7_datos.py` para crear cinco empresas nuevas con un sufijo aleatorio
 (A: Banco/Caja/Ahorro con los movimientos del PDF; B: empresa ajena; C: sin cuentas; D y E: casos que modifican
@@ -78,5 +78,5 @@ los IDs de la última corrida se escriben en `variables/` para usarlos con `oper
 (inicia sesión con `ana.<sufijo>@empresa.test` / `secreto123`; el sufijo está en `resultados.json`).
 
 Las evidencias B01–B15 (resultado obtenido, regla comprobada y capturas) están en
-`Evidencias Unidad II Actividad 7 - Balances.pdf`. No se publican `.env`, contraseñas reales ni tokens vigentes:
+`Evidencias Unidad II Actividad 7 - Balances.pdf` (raíz del repositorio). No se publican `.env`, contraseñas reales ni tokens vigentes:
 en las capturas el token aparece recortado.

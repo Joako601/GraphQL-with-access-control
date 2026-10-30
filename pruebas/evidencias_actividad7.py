@@ -22,7 +22,7 @@ from actividad7_datos import preparar
 EQUIPO = ("Ariff Medina", "Joaquín Uriona", "Mateo Martin", "Fernando Castro")
 EVIDENCIAS = actividad7.DOCS / "evidencias"
 CAPTURAS = EVIDENCIAS / "capturas"
-PDF = actividad7.DOCS / "Evidencias Unidad II Actividad 7 - Balances.pdf"
+PDF = actividad7.ROOT / "Evidencias Unidad II Actividad 7 - Balances.pdf"
 REGLAS = {
     "B01": "El saldo inicial sale de los movimientos anteriores al período y consultar un balance no modifica filas.",
     "B02": "Un profit negativo del día no implica números rojos si el saldo previo lo cubre.",
