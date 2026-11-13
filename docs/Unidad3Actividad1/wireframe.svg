@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="860" viewBox="0 0 1200 860" font-family="Segoe Print, Comic Sans MS, cursive" fill="none" stroke="#222" stroke-width="2">
+  <rect width="1200" height="860" fill="#fafaf7" stroke="none"/>
+  <text x="40" y="50" font-size="26" fill="#111" stroke="none" font-weight="bold">BOCETO - DASHBOARD FINANCIERO (Unidad III · Actividad 1)</text>
+  <text x="40" y="78" font-size="15" fill="#555" stroke="none">Low-fidelity · orden de lectura: período → totales → riesgo → detalle</text>
+
+  <!-- Sidebar -->
+  <rect x="40" y="100" width="170" height="720" rx="14"/>
+  <text x="60" y="135" font-size="16" fill="#222" stroke="none">Ingresos</text>
+  <rect x="55" y="155" width="140" height="32" rx="10" fill="#e8e8e2"/>
+  <text x="68" y="177" font-size="14" fill="#222" stroke="none">▣ Dashboard</text>
+  <text x="60" y="800" font-size="13" fill="#555" stroke="none">(opcional)</text>
+
+  <!-- 1 Encabezado -->
+  <rect x="240" y="100" width="920" height="70" rx="14"/>
+  <text x="260" y="132" font-size="20" fill="#111" stroke="none">1. ENCABEZADO</text>
+  <text x="260" y="156" font-size="14" fill="#444" stroke="none">Nombre de la empresa (company.name) · MXN · Período: 26 oct 2026 – 30 oct 2026</text>
+  <rect x="1010" y="118" width="130" height="34" rx="17"/>
+  <text x="1027" y="140" font-size="14" fill="#222" stroke="none">Cerrar sesión</text>
+
+  <!-- 2 Controles -->
+  <rect x="240" y="185" width="920" height="70" rx="14"/>
+  <text x="260" y="214" font-size="20" fill="#111" stroke="none">2. CONTROLES DE PERÍODO</text>
+  <rect x="600" y="200" width="170" height="38" rx="19"/><text x="615" y="224" font-size="14" fill="#444" stroke="none">Desde: fromDate</text>
+  <rect x="785" y="200" width="170" height="38" rx="19"/><text x="800" y="224" font-size="14" fill="#444" stroke="none">Hasta: toDate</text>
+  <rect x="970" y="200" width="120" height="38" rx="19" fill="#222"/><text x="992" y="224" font-size="14" fill="#fff" stroke="none">Actualizar</text>
+  <text x="260" y="242" font-size="12" fill="#b00" stroke="none">si Desde &gt; Hasta: mensaje, no se llama al API</text>
+
+  <!-- 3 Indicadores -->
+  <text x="240" y="290" font-size="20" fill="#111" stroke="none">3. INDICADORES GENERALES (generalBalance)</text>
+  <g font-size="14">
+    <rect x="240" y="305" width="172" height="120" rx="14"/><text x="256" y="335" fill="#555" stroke="none">Saldo inicial</text><text x="256" y="385" font-size="26" fill="#111" stroke="none">$ 0.00</text><text x="256" y="410" fill="#777" stroke="none">openingBalance</text>
+    <rect x="427" y="305" width="172" height="120" rx="14"/><text x="443" y="335" fill="#555" stroke="none">Ingresos</text><text x="443" y="385" font-size="26" fill="#111" stroke="none">$ 0.00</text><text x="443" y="410" fill="#777" stroke="none">totalIncome</text>
+    <rect x="614" y="305" width="172" height="120" rx="14"/><text x="630" y="335" fill="#555" stroke="none">Egresos</text><text x="630" y="385" font-size="26" fill="#111" stroke="none">$ 0.00</text><text x="630" y="410" fill="#777" stroke="none">totalExpense</text>
+    <rect x="801" y="305" width="172" height="120" rx="14"/><text x="817" y="335" fill="#555" stroke="none">Profit</text><text x="817" y="385" font-size="26" fill="#111" stroke="none">$ 0.00</text><text x="817" y="410" fill="#777" stroke="none">profit</text>
+    <rect x="988" y="305" width="172" height="120" rx="14" stroke-width="3"/><text x="1004" y="335" fill="#555" stroke="none">Saldo final</text><text x="1004" y="385" font-size="26" fill="#111" stroke="none">$ 0.00</text><text x="1004" y="410" fill="#777" stroke="none">closingBalance</text>
+  </g>
+  <text x="240" y="447" font-size="13" fill="#555" stroke="none">↑ números más grandes de la pantalla · MXN · dos decimales</text>
+
+  <!-- 4 Riesgo -->
+  <rect x="240" y="465" width="920" height="70" rx="14"/>
+  <text x="260" y="495" font-size="20" fill="#111" stroke="none">4. ESTADO DE RIESGO</text>
+  <rect x="560" y="482" width="230" height="36" rx="18"/><text x="575" y="505" font-size="14" fill="#222" stroke="none">General en rojo: Sí / No</text>
+  <rect x="805" y="482" width="330" height="36" rx="18"/><text x="820" y="505" font-size="14" fill="#b00" stroke="none">Cuentas en rojo: N (nombres)</text>
+  <text x="260" y="522" font-size="12" fill="#555" stroke="none">isInRed · accountsInRed</text>
+
+  <!-- 5 Detalle -->
+  <rect x="240" y="555" width="920" height="265" rx="14"/>
+  <text x="260" y="587" font-size="20" fill="#111" stroke="none">5. DETALLE POR CUENTA (generalBalance.accounts)</text>
+  <line x1="260" y1="610" x2="1140" y2="610"/>
+  <g font-size="14"><text x="265" y="632" text-anchor="start" fill="#444" stroke="none">Cuenta</text><text x="380" y="632" text-anchor="start" fill="#444" stroke="none">Estado</text><text x="600" y="632" text-anchor="end" fill="#444" stroke="none">Saldo inicial</text><text x="720" y="632" text-anchor="end" fill="#444" stroke="none">Ingresos</text><text x="840" y="632" text-anchor="end" fill="#444" stroke="none">Egresos</text><text x="960" y="632" text-anchor="end" fill="#444" stroke="none">Profit</text><text x="1130" y="632" text-anchor="end" fill="#444" stroke="none">Saldo final</text></g>
+  <line x1="260" y1="645" x2="1140" y2="645" stroke="#aaa"/>
+  <g font-size="14"><text x="265" y="672" text-anchor="start" fill="#666" stroke="none">Banco</text><text x="380" y="672" text-anchor="start" fill="#666" stroke="none">Activa</text><text x="600" y="672" text-anchor="end" fill="#666" stroke="none">────</text><text x="720" y="672" text-anchor="end" fill="#666" stroke="none">────</text><text x="840" y="672" text-anchor="end" fill="#666" stroke="none">────</text><text x="960" y="672" text-anchor="end" fill="#666" stroke="none">────</text><text x="1130" y="672" text-anchor="end" fill="#666" stroke="none">────</text></g>
+  <line x1="260" y1="687" x2="1140" y2="687" stroke="#aaa"/>
+  <g font-size="14"><text x="265" y="714" text-anchor="start" fill="#666" stroke="none">Caja</text><text x="380" y="714" text-anchor="start" fill="#666" stroke="none">Activa</text><text x="600" y="714" text-anchor="end" fill="#666" stroke="none">────</text><text x="720" y="714" text-anchor="end" fill="#666" stroke="none">────</text><text x="840" y="714" text-anchor="end" fill="#666" stroke="none">────</text><text x="960" y="714" text-anchor="end" fill="#b80" stroke="none">-0.00</text><text x="1130" y="714" text-anchor="end" fill="#b00" stroke="none">[En rojo] -0.00</text></g>
+  <line x1="260" y1="729" x2="1140" y2="729" stroke="#aaa"/>
+  <text x="265" y="770" font-size="13" fill="#555" stroke="none">Profit negativo = texto ámbar · Saldo final negativo = rojo + etiqueta "En rojo"</text>
+  <text x="265" y="795" font-size="13" fill="#555" stroke="none">Vacío: "No hay cuentas registradas" · Sin movimientos: "No hubo movimientos en el período"</text>
+</svg>
