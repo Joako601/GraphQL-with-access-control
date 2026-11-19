@@ -1,6 +1,6 @@
 from datetime import datetime
 from decimal import Decimal as PyDecimal
-from typing import TYPE_CHECKING, Annotated, NewType, Optional
+from typing import TYPE_CHECKING, Annotated, List, NewType, Optional
 
 import strawberry
 
@@ -141,3 +141,19 @@ class CreateCompanyUserInput:
     email: str
     password: str
     role_id: Optional[strawberry.ID] = None
+
+
+# ==================================================
+# UNIDAD III, ACTIVIDAD 2: SESIÓN ACTUAL
+# ==================================================
+
+@strawberry.type
+class Me:
+    """La membresía del token. No incluye contraseña ni hash; permissions son códigos como accounts.write."""
+    company_user_id: strawberry.ID
+    company_id: strawberry.ID
+    is_admin: bool
+    user: User
+    company: Company
+    role: Optional[Annotated["Role", strawberry.lazy("models.role_types")]]
+    permissions: List[str]

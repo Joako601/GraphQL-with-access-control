@@ -13,8 +13,11 @@ from models.types import (
     CreateCompanyUserInput,
     Decimal,
     LoginInput,
+    Me,
     UpdateCompanyInput,
+    User,
 )
+from models.role_types import Role
 from repositories import company_repository
 from schema.finance_schema import FinanceMutation, FinanceQuery
 from schema.role_schema import RoleMutation, RoleQuery
@@ -38,6 +41,20 @@ class Query:
     def company(self, id: strawberry.ID) -> Optional[Company]:
         row = company_repository.obtener_empresa(parse_id(id))
         return Company(**row) if row else None
+
+    @strawberry.field(description="Unidad III: membresía, empresa, rol y permisos del token de la sesión.")
+    def me(self, info: strawberry.Info) -> Me:
+        datos = user_service.sesion_actual(leer_actor(info))
+        membresia = datos["membership"]
+        return Me(
+            company_user_id=membresia["id"],
+            company_id=membresia["company_id"],
+            is_admin=membresia["is_admin"],
+            user=User(**datos["user"]),
+            company=Company(**datos["company"]),
+            role=Role(**datos["role"]) if datos["role"] else None,
+            permissions=datos["permissions"],
+        )
 
     @strawberry.field
     def company_users(

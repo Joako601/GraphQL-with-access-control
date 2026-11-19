@@ -50,6 +50,8 @@ services:
       # Actividad 4: cuentas, conceptos y movimientos (se ejecuta después de database.sql)
       - ./database_finanzas.sql:/docker-entrypoint-initdb.d/02_database_finanzas.sql
       - ./database_roles.sql:/docker-entrypoint-initdb.d/03_database_roles.sql
+      # Unidad III, Actividad 2: llaves de idempotencia de createTransaction
+      - ./database_idempotencia.sql:/docker-entrypoint-initdb.d/04_database_idempotencia.sql
 
     restart: unless-stopped
 
