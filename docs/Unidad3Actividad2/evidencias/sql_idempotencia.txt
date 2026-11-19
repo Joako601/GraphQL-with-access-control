@@ -1,0 +1,7 @@
+Llave renta-nov-6708: envío 1 -> id 10, envío 2 -> id 10 (mismo id: True)
+Llave renta-nov-6708-b: envío 3 -> id 11 (otro movimiento: True)
+Movimientos de la empresa: 3 antes, 5 después (+2)
+
+SELECT de idempotency_keys JOIN transactions:
+renta-nov-6708 -> transaction 10 (100.00)
+renta-nov-6708-b -> transaction 11 (100.00)

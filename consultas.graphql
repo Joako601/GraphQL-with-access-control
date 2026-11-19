@@ -163,7 +163,7 @@ mutation CrearCuenta($input: CreateAccountInput!) {
 
 # Pedro no registra movimientos como CONSULTA
 # Token (Authorization: Bearer) de: Pedro
-# Variables: {"input": {"accountId": "1", "conceptId": "1", "transactionType": "INCOME", "amount": "1500.00", "shortDescription": "Movimiento de Pedro"}}
+# Variables: {"input": {"idempotencyKey": "pedro-mov-1", "accountId": "1", "conceptId": "1", "transactionType": "INCOME", "amount": "1500.00", "shortDescription": "Movimiento de Pedro"}}
 mutation RegistrarMovimiento($input: CreateTransactionInput!) {
   createTransaction(input: $input) {
     id
@@ -187,7 +187,7 @@ mutation CambiarPuesto($input: AssignRoleInput!) {
 
 # Pedro registra el movimiento como CAPTURISTA
 # Token (Authorization: Bearer) de: Pedro
-# Variables: {"input": {"accountId": "1", "conceptId": "1", "transactionType": "INCOME", "amount": "1500.00", "shortDescription": "Movimiento de Pedro"}}
+# Variables: {"input": {"idempotencyKey": "pedro-mov-1", "accountId": "1", "conceptId": "1", "transactionType": "INCOME", "amount": "1500.00", "shortDescription": "Movimiento de Pedro"}}
 mutation RegistrarMovimiento($input: CreateTransactionInput!) {
   createTransaction(input: $input) {
     id

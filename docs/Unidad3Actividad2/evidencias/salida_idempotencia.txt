@@ -1,0 +1,8 @@
+Caso 1: OK  misma llave dos veces -> id 7 y 7, filas 0 -> 1
+Caso 2: OK  otra llave, mismo monto -> id nuevo 8, filas 2
+Caso 3: OK  una sola fila para la primera llave -> idempotency_keys=1, transactions=1
+Caso 4: OK  misma llave, otro monto -> Esta idempotencyKey ya se usó con otros datos (cuenta, concepto, tipo, monto, fecha o descripción). Para un movimiento nuevo genera otra llave
+Caso 5: OK  5 envíos simultáneos, misma llave -> ids ['9'], filas 2 -> 3
+Caso 6: OK  lectura repetida -> filas 3 -> 3
+
+Todas las comprobaciones pasaron.

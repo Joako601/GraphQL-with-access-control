@@ -78,8 +78,8 @@ LOGIN = """mutation($e: String!, $p: String!) { login(input: {email: $e, passwor
   tokenType token user { name } } }"""
 CREATE_ACCOUNT = """mutation($c: ID!, $n: String!) { createAccount(input: {companyId: $c, accountType: CASH, name: $n}) {
   id name } }"""
-CREATE_TX = """mutation($a: ID!, $c: ID!) { createTransaction(input: {accountId: $a, conceptId: $c,
-  transactionType: INCOME, amount: "100.00"}) { id amount } }"""
+CREATE_TX = """mutation($a: ID!, $c: ID!, $k: String!) { createTransaction(input: {idempotencyKey: $k,
+  accountId: $a, conceptId: $c, transactionType: INCOME, amount: "100.00"}) { id amount } }"""
 ASSIGN_ROLE = """mutation($m: ID!, $r: ID!) { assignRole(input: {companyUserId: $m, roleId: $r}) {
   id role { code } } }"""
 ACCOUNTS = "query($c: ID!) { accounts(companyId: $c) { id name } }"
@@ -123,17 +123,19 @@ def preparar():
 def main():
     s = preparar()
     t, c1 = s["tokens"], s["c1"]
-    tx_vars = {"a": s["cuenta"], "c": s["concepto"]}
+    def tx_vars():  # cada captura es una acción nueva: su propia idempotencyKey
+        return {"a": s["cuenta"], "c": s["concepto"], "k": str(uuid.uuid4())}
+
     contar_cuentas = f"SELECT COUNT(*) FROM accounts WHERE company_id = {int(c1)};"
     contar_tx = f"SELECT COUNT(*) FROM transactions WHERE company_id = {int(c1)};"
     casos = [
         (1, "Ninguno", None, CREATE_ACCOUNT, {"c": c1, "n": "Sin token"}, contar_cuentas, False),
-        (2, "Maria, capturista", t["Maria"], CREATE_TX, tx_vars, contar_tx, True),
+        (2, "Maria, capturista", t["Maria"], CREATE_TX, tx_vars(), contar_tx, True),
         (3, "Maria, capturista", t["Maria"], CREATE_ACCOUNT, {"c": c1, "n": "De Maria"}, contar_cuentas, False),
         (4, "Luis, contador", t["Luis"], CREATE_ACCOUNT, {"c": c1, "n": "De Luis"}, contar_cuentas, True),
-        (5, "Pedro, consulta", t["Pedro"], CREATE_TX, tx_vars, contar_tx, False),
+        (5, "Pedro, consulta", t["Pedro"], CREATE_TX, tx_vars(), contar_tx, False),
         (6, "Ana", t["Ana"], ASSIGN_ROLE, {"m": s["ids"]["Pedro"], "r": s["roles"]["CAPTURISTA"]}, None, True),
-        (7, "El mismo token de Pedro", t["Pedro"], CREATE_TX, tx_vars, contar_tx, True),
+        (7, "El mismo token de Pedro", t["Pedro"], CREATE_TX, tx_vars(), contar_tx, True),
         (8, "Beto, otra empresa", t["Beto"], ACCOUNTS, {"c": c1}, None, False),
         ("9a", "Token alterado", token_alterado(t["Luis"]), CREATE_ACCOUNT, {"c": c1, "n": "Alterado"}, contar_cuentas, False),
         ("9b", "Token vencido", token_vencido(t["Luis"]), CREATE_ACCOUNT, {"c": c1, "n": "Vencido"}, contar_cuentas, False),

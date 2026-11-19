@@ -58,6 +58,10 @@ class Account:
     def company(self) -> Company:
         return Company(**company_repository.obtener_empresa(self.company_id))
 
+    @strawberry.field(description="CLABE enmascarada (****1234) para tablas: no expone los 18 dígitos.")
+    def masked_clabe(self) -> Optional[str]:
+        return f"****{self.clabe[-4:]}" if self.clabe else None
+
 
 def account_from_row(row):
     return Account(**{**row, "account_type": AccountType(row["account_type"])})
@@ -181,6 +185,9 @@ def transaction_from_row(row):
 
 @strawberry.input
 class CreateTransactionInput:
+    # Unidad III, Actividad 2: el cliente genera una llave por acción (p. ej. un UUID al pulsar Guardar) y la
+    # reenvía igual en cada reintento. Misma llave y mismos datos -> el mismo movimiento, sin otro INSERT.
+    idempotency_key: str
     account_id: strawberry.ID
     concept_id: strawberry.ID
     transaction_type: TransactionType

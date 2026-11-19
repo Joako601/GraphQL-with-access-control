@@ -6,6 +6,7 @@ falta restaurar la base entre ejecuciones. Usa los helpers de login y empresa de
 """
 import json
 import urllib.error
+import uuid
 
 import actividad6 as a6
 from actividad6 import RUN, empresa, login, ok
@@ -52,8 +53,9 @@ GENERAL_BALANCE = """query BalanceDeLaEmpresa($f: Date!, $t: Date!) {
     }
   }
 }"""
-CREATE_TX = """mutation($a: ID!, $c: ID!, $t: TransactionType!, $m: Decimal!, $d: Time, $s: String) {
-  createTransaction(input: {accountId: $a, conceptId: $c, transactionType: $t, amount: $m,
+# Unidad III, Actividad 2: createTransaction exige idempotencyKey (una llave nueva por movimiento).
+CREATE_TX = """mutation($k: String!, $a: ID!, $c: ID!, $t: TransactionType!, $m: Decimal!, $d: Time, $s: String) {
+  createTransaction(input: {idempotencyKey: $k, accountId: $a, conceptId: $c, transactionType: $t, amount: $m,
   transactionDate: $d, shortDescription: $s}) { id amount transactionDate capturedAt } }"""
 
 # Movimientos del PDF; todos a las 12:00:00Z. El ingreso del 25 se registra una sola vez.
@@ -111,7 +113,8 @@ def cuenta(token, company, concs, nombre):
 
 
 def mov(token, concs, cuenta_id, tipo, monto, fecha, desc=None):
-    variables = {"a": cuenta_id, "c": concs[tipo], "t": tipo, "m": monto, "d": fecha, "s": desc}
+    variables = {"k": str(uuid.uuid4()), "a": cuenta_id, "c": concs[tipo], "t": tipo, "m": monto, "d": fecha,
+                 "s": desc}
     return ok(gql(CREATE_TX, variables, token), "createTransaction")
 
 
