@@ -4,6 +4,8 @@ from database.database import get_connection
 
 
 DDL_PATH = Path(__file__).resolve().parent.parent / "database_roles.sql"
+# Unidad III, Actividad 2: un volumen creado antes de esta actividad no tiene idempotency_keys.
+IDEMPOTENCIA_DDL_PATH = Path(__file__).resolve().parent.parent / "database_idempotencia.sql"
 
 ROLES = [
     ("ADMINISTRADOR", "Administrador", "El administrador principal de la empresa"),
@@ -58,6 +60,7 @@ def _contar(connection, tabla):
 def inicializar_roles_y_permisos():
     with get_connection() as connection:
         connection.execute(DDL_PATH.read_text(encoding="utf-8"))
+        connection.execute(IDEMPOTENCIA_DDL_PATH.read_text(encoding="utf-8"))
 
         if _contar(connection, "roles") == 0:
             for code, name, description in ROLES:

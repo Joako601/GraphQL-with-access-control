@@ -206,3 +206,17 @@ def asignar_rol(company_user_id, role_id):
             RETURNING {CUR_COLUMNS};
         """
         return connection.execute(sql, (company_user_id, role_id)).fetchone()
+
+
+def obtener_codigos_de_permisos_de_rol(role_id):
+    """Códigos de los permisos activos de un rol activo (Unidad III: el dashboard decide qué botones dibujar)."""
+    with get_connection() as connection:
+        sql = """
+            SELECT p.code
+            FROM role_permissions rp
+            JOIN permissions p ON p.id = rp.permission_id
+            JOIN roles r ON r.id = rp.role_id
+            WHERE rp.role_id = %s AND rp.is_active AND p.is_active AND r.is_active
+            ORDER BY p.code;
+        """
+        return [row["code"] for row in connection.execute(sql, (role_id,)).fetchall()]

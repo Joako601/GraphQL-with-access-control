@@ -8,7 +8,6 @@ import { KpiCards } from './KpiCards'
 import { PeriodControls } from './PeriodControls'
 import { periodLabel } from './periodLabel'
 import { RiskPanel } from './RiskPanel'
-import { Sidebar } from './Sidebar'
 import { AccessDenied, DashboardSkeleton, NoMovementsNote, RequestError } from './States'
 
 interface DashboardPageProps {
@@ -45,14 +44,13 @@ function BalanceContent({ state, onRetry }: { state: BalanceState; onRetry: () =
 export function DashboardPage({ session, onLogout, onUnauthenticated }: DashboardPageProps) {
   const { companyName, balance, load, retry } = useDashboardData(session.token, DEFAULT_PERIOD, onUnauthenticated)
 
+  // Unidad III, Actividad 2: la barra lateral y el <main> viven en AppShell (App.tsx), compartidos con la
+  // sección administrativa. El contenido del dashboard financiero no cambia.
   return (
-    <div className="flex min-h-svh bg-background">
-      <Sidebar user={session.user} />
-      <main className="mx-auto w-full max-w-7xl min-w-0 space-y-6 p-4 md:p-8">
-        <DashboardHeader companyName={companyName} balance={balance} onLogout={onLogout} />
-        <PeriodControls loading={balance.status === 'loading'} onSubmit={(period) => void load(period)} />
-        <BalanceContent state={balance} onRetry={() => void retry()} />
-      </main>
-    </div>
+    <>
+      <DashboardHeader companyName={companyName} balance={balance} onLogout={onLogout} />
+      <PeriodControls loading={balance.status === 'loading'} onSubmit={(period) => void load(period)} />
+      <BalanceContent state={balance} onRetry={() => void retry()} />
+    </>
   )
 }

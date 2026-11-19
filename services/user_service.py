@@ -1,3 +1,4 @@
+from repositories import company_repository, role_repository
 from repositories import user_repository as repo
 from services import role_service
 from services.auth import crear_token, hash_password, verificar_password
@@ -48,7 +49,27 @@ def desactivar_usuario(company_user_id, actor):
     exigir_permiso(actor, "company.users.write", company_user["company_id"])
     if company_user["is_admin"]:
         raise AppError("No se puede desactivar al administrador principal")
+    if not company_user["is_active"]:
+        raise AppError("La membresía ya está inactiva")
     return repo.desactivar_company_user(company_user["id"])
+
+
+def sesion_actual(actor):
+    """Unidad III, Actividad 2: quién es el token. Solo lectura, no pide permisos: cualquier sesión válida
+    puede saber su propia empresa, su rol y sus permisos para que el dashboard oculte lo que no puede usar."""
+    usuario = repo.obtener_usuario(actor["user_id"])
+    if not usuario or not usuario["is_active"]:
+        raise AppError("El usuario está inactivo")
+    asignacion = role_repository.obtener_rol_activo_de_membresia(actor["id"])
+    rol = role_repository.obtener_rol(asignacion["role_id"]) if asignacion else None
+    permisos = role_repository.obtener_codigos_de_permisos_de_rol(rol["id"]) if rol else []
+    return {
+        "membership": actor,
+        "user": usuario,
+        "company": company_repository.obtener_empresa(actor["company_id"]),
+        "role": rol,
+        "permissions": permisos,
+    }
 
 
 def _membresia_para_login(user_id, company_id):

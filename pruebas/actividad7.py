@@ -6,6 +6,7 @@ Los esperados están escritos a mano desde los datos de entrada (tabla del PDF),
 balances. Guarda docs/Actividad7/evidencias/resultados.json (sin tokens) y docs/Actividad7/variables/*.json.
 """
 import json
+import uuid
 import sys
 from datetime import datetime
 from decimal import Decimal
@@ -157,11 +158,12 @@ def acceso(s):
     pedro, contar = s["t"]["Pedro"], f"SELECT COUNT(*) FROM transactions WHERE company_id = {int(s['A'])};"
     lectura = dato(general(pedro), "generalBalance")
     antes = sql(contar)
-    captura = datos.ejecutar("""mutation CapturaConsulta($a: ID!, $c: ID!) {
-  createTransaction(input: {accountId: $a, conceptId: $c, transactionType: INCOME, amount: "10.00"}) {
+    captura = datos.ejecutar("""mutation CapturaConsulta($k: String!, $a: ID!, $c: ID!) {
+  createTransaction(input: {idempotencyKey: $k, accountId: $a, conceptId: $c, transactionType: INCOME,
+    amount: "10.00"}) {
     id
   }
-}""", {"a": banco, "c": s["cA"]["INCOME"]}, pedro)
+}""", {"k": str(uuid.uuid4()), "a": banco, "c": s["cA"]["INCOME"]}, pedro)
     despues = sql(contar)
     caso("B13", "Rol CONSULTA lee balances pero no captura", {"lectura": GENERAL, "captura": "rechazada", "filas": "iguales"},
          {"lectura": lectura, "captura": rechazo(captura), "filas_antes": antes, "filas_despues": despues},
