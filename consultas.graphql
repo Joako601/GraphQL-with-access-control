@@ -11,17 +11,17 @@ query Personas($empresa:ID!){
 }
 
 # Los cuatro roles del catálogo
-# Sin token: catálogo público
+# Token (Authorization: Bearer) con roles.read
 # Variables: {}
 { roles { id code isActive } }
 
 # Los diez permisos del catálogo
-# Sin token: catálogo público
+# Token (Authorization: Bearer) con roles.read
 # Variables: {}
 { permissions { id code isActive } }
 
 # Lista inicial de ADMINISTRADOR
-# Sin token: catálogo público
+# Token (Authorization: Bearer) con roles.read
 # Variables: {"rol": "1"}
 query PermisosDelRol($rol: ID!) {
   rolePermissions(roleId: $rol) {
@@ -32,7 +32,7 @@ query PermisosDelRol($rol: ID!) {
 }
 
 # Lista inicial de CONTADOR
-# Sin token: catálogo público
+# Token (Authorization: Bearer) con roles.read
 # Variables: {"rol": "2"}
 query PermisosDelRol($rol: ID!) {
   rolePermissions(roleId: $rol) {
@@ -43,7 +43,7 @@ query PermisosDelRol($rol: ID!) {
 }
 
 # Lista inicial de CAPTURISTA
-# Sin token: catálogo público
+# Token (Authorization: Bearer) con roles.read
 # Variables: {"rol": "3"}
 query PermisosDelRol($rol: ID!) {
   rolePermissions(roleId: $rol) {
@@ -54,7 +54,7 @@ query PermisosDelRol($rol: ID!) {
 }
 
 # Lista inicial de CONSULTA
-# Sin token: catálogo público
+# Token (Authorization: Bearer) con roles.read
 # Variables: {"rol": "4"}
 query PermisosDelRol($rol: ID!) {
   rolePermissions(roleId: $rol) {
@@ -198,7 +198,7 @@ mutation RegistrarMovimiento($input: CreateTransactionInput!) {
 }
 
 # La lista de CONTADOR sigue igual
-# Sin token: catálogo público
+# Token (Authorization: Bearer) con roles.read
 # Variables: {"rol": "2"}
 query PermisosDelRol($rol: ID!) {
   rolePermissions(roleId: $rol) {
@@ -209,7 +209,7 @@ query PermisosDelRol($rol: ID!) {
 }
 
 # La lista de CONSULTA sigue igual
-# Sin token: catálogo público
+# Token (Authorization: Bearer) con roles.read
 # Variables: {"rol": "4"}
 query PermisosDelRol($rol: ID!) {
   rolePermissions(roleId: $rol) {

@@ -144,11 +144,12 @@ def usuario(token_admin, company, nombre, role_id):
 
 
 def preparar():
-    roles = {r["code"]: r["id"] for r in ok(gql("{ roles { id code } }"), "roles")}
     s = {"A": empresa(f"Balances {RUN}", "Ana"), "B": empresa(f"Ajena {RUN}", "Beto"),
          "C": empresa(f"Sin cuentas {RUN}", "Carla"), "D": empresa(f"Casos {RUN}", "Dani"),
-         "E": empresa(f"Rojo {RUN}", "Eva"), "roles": roles}
+         "E": empresa(f"Rojo {RUN}", "Eva")}
     s["t"] = {n: login(n) for n in ("Ana", "Beto", "Carla", "Dani", "Eva")}
+    roles = {r["code"]: r["id"] for r in ok(gql("{ roles { id code } }", token=s["t"]["Ana"]), "roles")}
+    s["roles"] = roles
     s["t"]["Pedro"] = usuario(s["t"]["Ana"], s["A"], "Pedro", roles["CONSULTA"])
 
     s["cA"] = conceptos(s["t"]["Ana"], s["A"])

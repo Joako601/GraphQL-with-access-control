@@ -18,6 +18,7 @@ from models.role_types import (
 )
 from services import role_service
 from services.auth import leer_actor
+from services.permission_service import exigir_permiso
 from services.validators import AppError
 
 
@@ -25,7 +26,8 @@ from services.validators import AppError
 class RoleQuery:
 
     @strawberry.field
-    def roles(self, active_only: Optional[bool] = None) -> List[Role]:
+    def roles(self, info: strawberry.Info, active_only: Optional[bool] = None) -> List[Role]:
+        exigir_permiso(leer_actor(info), "roles.read", alternativo="roles.write")
         return [Role(**row) for row in role_service.listar_roles(active_only)]
 
     @strawberry.field
@@ -36,7 +38,8 @@ class RoleQuery:
             return None
 
     @strawberry.field
-    def permissions(self, active_only: Optional[bool] = None) -> List[Permission]:
+    def permissions(self, info: strawberry.Info, active_only: Optional[bool] = None) -> List[Permission]:
+        exigir_permiso(leer_actor(info), "roles.read")
         return [Permission(**row) for row in role_service.listar_permisos(active_only)]
 
     @strawberry.field
@@ -62,7 +65,8 @@ class RoleQuery:
         )
 
     @strawberry.field
-    def role_permissions(self, role_id: strawberry.ID) -> List[RolePermission]:
+    def role_permissions(self, info: strawberry.Info, role_id: strawberry.ID) -> List[RolePermission]:
+        exigir_permiso(leer_actor(info), "roles.read")
         return [RolePermission(**row) for row in role_service.listar_permisos_de_rol(role_id)]
 
 

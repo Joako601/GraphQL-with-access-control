@@ -42,7 +42,7 @@ def rol_sin_lectura(token_admin, roles):
     q = """mutation($c: String!) { createRole(input: {code: $c, name: "Demo sin lectura",
       description: "Unidad III: usuario de demo sin permisos de lectura de balances"}) { id } }"""
     rol = a6.ok(d.gql(q, {"c": ROL_SIN_LECTURA}, token_admin), "createRole")["id"]
-    permisos = {p["code"]: p["id"] for p in a6.ok(d.gql("{ permissions { id code } }"), "permissions")}
+    permisos = {p["code"]: p["id"] for p in a6.ok(d.gql("{ permissions { id code } }", token=token_admin), "permissions")}
     q = "mutation($r: ID!, $p: ID!) { assignPermissionToRole(input: {roleId: $r, permissionId: $p}) { id } }"
     a6.ok(d.gql(q, {"r": rol, "p": permisos["concepts.read"]}, token_admin), "assignPermissionToRole")
     return rol
@@ -64,7 +64,7 @@ def preparar():
     for nombre, dia, tipo, monto, desc in d.DATOS:
         d.mov(ana, concs, cuentas[nombre], tipo, monto, d.utc(dia), desc)
 
-    roles = {r["code"]: r["id"] for r in a6.ok(d.gql("{ roles { id code } }"), "roles")}
+    roles = {r["code"]: r["id"] for r in a6.ok(d.gql("{ roles { id code } }", token=ana), "roles")}
     usuario(ana, company, "Pedro", roles["CONSULTA"])
     usuario(ana, company, "SinLectura", rol_sin_lectura(ana, roles))
     print(f"{EMPRESA} creada (companyId {company}). Usuarios: "

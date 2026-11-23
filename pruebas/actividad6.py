@@ -102,9 +102,9 @@ def login(nombre):
 
 
 def preparar():
-    roles = {r["code"]: r["id"] for r in ok(gql("{ roles { id code } }"), "roles")}
     c1, c2 = empresa(f"Ingresos {RUN}", "Ana"), empresa(f"Otra {RUN}", "Beto")
     ana = login("Ana")
+    roles = {r["code"]: r["id"] for r in ok(gql("{ roles { id code } }", token=ana), "roles")}
     ids = {}
     for nombre, rol in (("Maria", "CAPTURISTA"), ("Luis", "CONTADOR"), ("Pedro", "CONSULTA")):
         r = gql("""mutation($c: ID!, $n: String!, $e: String!, $p: String!, $r: ID!) {

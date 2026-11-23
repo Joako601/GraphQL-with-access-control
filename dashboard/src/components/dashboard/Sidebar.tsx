@@ -1,11 +1,11 @@
-import { FolderTree, Landmark, LayoutDashboard, Users, type LucideIcon } from 'lucide-react'
+import { FolderTree, Landmark, LayoutDashboard, ShieldCheck, Users, type LucideIcon } from 'lucide-react'
 import { routeHref, type Route } from '@/lib/route'
 import type { SessionUser } from '@/lib/session'
 import { cn } from '@/lib/utils'
 
-interface NavItem { label: string; route: Route; icon: LucideIcon }
+interface NavItem { label: string; route: Route; icon: LucideIcon; permission?: string }
 
-// Menú de la aplicación: el dashboard financiero (actividad 1) y los tres módulos administrativos (actividad 2).
+// Ambos formatos del menú usan las mismas rutas y permisos.
 const NAV_GROUPS: readonly { title: string; items: NavItem[] }[] = [
   {
     title: 'Financiero',
@@ -17,6 +17,7 @@ const NAV_GROUPS: readonly { title: string; items: NavItem[] }[] = [
       { label: 'Usuarios', route: { section: 'admin', module: 'usuarios' }, icon: Users },
       { label: 'Cuentas', route: { section: 'admin', module: 'cuentas' }, icon: Landmark },
       { label: 'Conceptos', route: { section: 'admin', module: 'conceptos' }, icon: FolderTree },
+      { label: 'Roles y permisos', route: { section: 'admin', module: 'roles' }, icon: ShieldCheck, permission: 'roles.read' },
     ],
   },
 ]
@@ -39,7 +40,13 @@ function NavLink({ item, current, compact = false }: { item: NavItem; current: R
   )
 }
 
-export function Sidebar({ user, route }: { user: SessionUser; route: Route }) {
+function visibleItems(items: NavItem[], permissions: string[]) {
+  return items.filter(({ permission }) => !permission || permissions.includes(permission))
+}
+
+interface NavProps { route: Route; permissions: string[] }
+
+export function Sidebar({ user, route, permissions }: NavProps & { user: SessionUser }) {
   return (
     <aside className="sticky top-0 hidden h-svh w-60 shrink-0 flex-col border-r border-white/[0.06] bg-black/40 p-4 lg:flex">
       <span className="px-3 py-2 text-sm font-medium tracking-[0.2em] text-foreground/80">INGRESOS</span>
@@ -48,7 +55,7 @@ export function Sidebar({ user, route }: { user: SessionUser; route: Route }) {
           <div key={group.title}>
             <p className="px-3 text-xs uppercase tracking-wider text-muted-foreground">{group.title}</p>
             <div className="mt-2 space-y-1">
-              {group.items.map((item) => <NavLink key={item.label} item={item} current={route} />)}
+              {visibleItems(group.items, permissions).map((item) => <NavLink key={item.label} item={item} current={route} />)}
             </div>
           </div>
         ))}
@@ -62,10 +69,10 @@ export function Sidebar({ user, route }: { user: SessionUser; route: Route }) {
 }
 
 /** Debajo de lg la barra lateral se oculta: el mismo menú queda arriba, en una fila desplazable. */
-export function MobileNav({ route }: { route: Route }) {
+export function MobileNav({ route, permissions }: NavProps) {
   return (
     <nav aria-label="Secciones" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:hidden">
-      {NAV_GROUPS.flatMap((group) => group.items).map((item) => (
+      {NAV_GROUPS.flatMap((group) => visibleItems(group.items, permissions)).map((item) => (
         <NavLink key={item.label} item={item} current={route} compact />
       ))}
     </nav>
