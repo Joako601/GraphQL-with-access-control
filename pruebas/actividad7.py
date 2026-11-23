@@ -173,7 +173,7 @@ def acceso(s):
 
 def permisos_temporales(s):
     ana = s["t"]["Ana"]
-    permisos = {p["code"]: p["id"] for p in ok(gql("{ permissions { id code } }"), "permissions")}
+    permisos = {p["code"]: p["id"] for p in ok(gql("{ permissions { id code } }", token=ana), "permissions")}
     rol = ok(gql('mutation($c: String!) { createRole(input: {code: $c, name: "Lector de balances"}) { id } }',
                  {"c": f"BALANCES_{RUN.upper()}"}, ana), "createRole")["id"]
     poner = "mutation($r: ID!, $p: ID!) { assignPermissionToRole(input: {roleId: $r, permissionId: $p}) { id } }"

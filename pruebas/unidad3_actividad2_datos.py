@@ -62,7 +62,7 @@ def preparar():
                 {"c": company, "n": admin, "e": correo(admin), "p": a6.PASSWORD}), "createCompanyAdmin")
     token = login(admin)
 
-    roles = {r["code"]: r["id"] for r in a6.ok(d.gql("{ roles { id code } }"), "roles")}
+    roles = {r["code"]: r["id"] for r in a6.ok(d.gql("{ roles { id code } }", token=token), "roles")}
     q = """mutation($c: ID!, $n: String!, $e: String!, $p: String!, $r: ID!) {
       createCompanyUser(input: {companyId: $c, name: $n, email: $e, password: $p, roleId: $r}) { id } }"""
     for nombre, rol in EQUIPO[1:]:

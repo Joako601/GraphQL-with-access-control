@@ -1,28 +1,33 @@
-import { useCallback } from 'react'
 import { LogOut } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useApiQuery } from '@/hooks/useApiQuery'
-import { fetchMe, type Me } from '@/lib/admin'
+import type { QueryState } from '@/hooks/useApiQuery'
+import type { Me } from '@/lib/admin'
+import { ApiError } from '@/lib/graphql'
 import type { AdminModule } from '@/lib/route'
 import type { Session } from '@/lib/session'
 import { AccountsModule } from './AccountsModule'
 import { ConceptsModule } from './ConceptsModule'
-import { LoadFailed } from './parts'
+import { Denied, LoadFailed } from './parts'
+import { RolesModule } from './RolesModule'
 import { UsersModule } from './UsersModule'
 
 /** Lo que cada módulo necesita de la sesión. La empresa y los permisos salen de `me`, no del navegador. */
 export interface AdminContext {
   token: string
   companyId: string
+  companyUserId: string
   permissions: string[]
+  reloadSession: () => void
   onUnauthenticated: () => void
 }
 
 interface AdminPageProps {
   session: Session
   module: AdminModule
+  state: QueryState<Me>
+  reload: () => void
   onLogout: () => void
   onUnauthenticated: () => void
 }
@@ -54,12 +59,11 @@ function AdminHeader({ me, onLogout }: { me: Me | null; onLogout: () => void }) 
   )
 }
 
-export function AdminPage({ session, module, onLogout, onUnauthenticated }: AdminPageProps) {
-  const fetcher = useCallback(() => fetchMe(session.token), [session.token])
-  const { state, reload } = useApiQuery(fetcher, onUnauthenticated)
+export function AdminPage({ session, module, state, reload, onLogout, onUnauthenticated }: AdminPageProps) {
   const me = state.status === 'success' ? state.data : null
   const ctx: AdminContext | null = me && {
-    token: session.token, companyId: me.companyId, permissions: me.permissions, onUnauthenticated,
+    token: session.token, companyId: me.companyId, companyUserId: me.companyUserId,
+    permissions: me.permissions, reloadSession: reload, onUnauthenticated,
   }
 
   return (
@@ -71,6 +75,9 @@ export function AdminPage({ session, module, onLogout, onUnauthenticated }: Admi
       {ctx && module === 'usuarios' && <UsersModule key="u" ctx={ctx} />}
       {ctx && module === 'cuentas' && <AccountsModule key="c" ctx={ctx} />}
       {ctx && module === 'conceptos' && <ConceptsModule key="k" ctx={ctx} />}
+      {ctx && module === 'roles' && (ctx.permissions.includes('roles.read')
+        ? <RolesModule key="r" ctx={ctx} />
+        : <Denied error={new ApiError('Se requiere el permiso roles.read.', 'FORBIDDEN')} />)}
     </>
   )
 }

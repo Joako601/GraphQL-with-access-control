@@ -1,17 +1,19 @@
-import { Fragment, useCallback, useState, type FormEvent } from 'react'
-import { Loader2, Search, UserPlus } from 'lucide-react'
-import { toast } from 'sonner'
+import { Fragment, useCallback, useState } from 'react'
+import { Search, UserPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useApiQuery, useMutation } from '@/hooks/useApiQuery'
-import { createCompanyUser, deactivateCompanyUser, fetchCompanyUsers, type CompanyUser } from '@/lib/admin'
-import { can, countUsers, filterUsers, formatJoinedAt, type StatusFilter } from '@/lib/catalog'
+import { useApiQuery, type QueryState } from '@/hooks/useApiQuery'
+import { fetchCompanyUsers, type CompanyUser } from '@/lib/admin'
+import { can, filterUsers, formatJoinedAt, type StatusFilter } from '@/lib/catalog'
+import { fetchRoles, type CatalogEntry } from '@/lib/roles'
 import { cn } from '@/lib/utils'
 import type { AdminContext } from './AdminPage'
+import { UserRole } from './UserRole'
+import { Counts, DeactivateConfirm, NewUserForm } from './UsersPanels'
 import {
-  CARD, Denied, EmptyState, Field, FIELD, FormError, FormPanel, LoadFailed, ModuleTitle, PRIMARY, SegmentedFilter,
+  CARD, Denied, EmptyState, FIELD, LoadFailed, ModuleTitle, PRIMARY, SegmentedFilter,
   SourceNote, StatusBadge, TableSkeleton,
 } from './parts'
 
@@ -20,60 +22,6 @@ const STATUS_OPTIONS = [
   { value: 'active', label: 'Activos' },
   { value: 'inactive', label: 'Inactivos' },
 ] as const
-
-function Counts({ users }: { users: CompanyUser[] }) {
-  const counts = countUsers(users)
-  const tiles = [
-    { label: 'Usuarios activos', value: counts.active, warn: false },
-    // 0 o 1. Más de uno es un error de datos del Parcial I: se muestra en ámbar, no se oculta.
-    { label: 'Administrador principal', value: counts.admins, warn: counts.admins > 1 },
-    { label: 'Inactivos', value: counts.inactive, warn: false },
-  ]
-  return (
-    <div className="grid grid-cols-3 gap-3">
-      {tiles.map((tile) => (
-        <Card key={tile.label} className={cn(CARD, 'py-4', tile.warn && 'border-amber-500/40')}>
-          <CardContent className="px-4 sm:px-5">
-            <p className="text-xs text-muted-foreground sm:text-sm">{tile.label}</p>
-            {/* Conteos de personas, no importes: sin etiqueta MXN. */}
-            <p className={cn('mt-1 text-3xl font-semibold tabular-nums', tile.warn && 'text-amber-300')}>{tile.value}</p>
-            {tile.warn && <p className="mt-1 text-xs text-amber-300">Hay más de un administrador: revisar datos.</p>}
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  )
-}
-
-/** Desactivar es una baja lógica: el texto lo dice, no hay "borrar para siempre". */
-function DeactivateConfirm({ user, ctx, onDone, onCancel }: {
-  user: CompanyUser; ctx: AdminContext; onDone: () => void; onCancel: () => void
-}) {
-  const { run, pending, error } = useMutation(ctx.onUnauthenticated)
-
-  async function confirm() {
-    if (await run(() => deactivateCompanyUser(ctx.token, user.id))) {
-      toast.success(`${user.user.name} ya no opera en la empresa`, { description: 'Su historial se conserva.' })
-      onDone()
-    }
-  }
-  return (
-    <div className="space-y-2 rounded-xl border border-white/10 bg-white/[0.03] p-3">
-      <p className="text-sm">
-        <b>{user.user.name}</b> deja de operar en la empresa y ya no podrá iniciar sesión en ella. No se borra:
-        la fila y su historial se conservan con estado inactivo.
-      </p>
-      <div className="flex gap-2">
-        <Button size="sm" variant="destructive" className="rounded-full" disabled={pending} onClick={() => void confirm()}>
-          {pending && <Loader2 className="animate-spin" />}
-          Confirmar desactivación
-        </Button>
-        <Button size="sm" variant="ghost" className="rounded-full" disabled={pending} onClick={onCancel}>Cancelar</Button>
-      </div>
-      <FormError message={error} />
-    </div>
-  )
-}
 
 function RowAction({ user, onDeactivate }: { user: CompanyUser; onDeactivate: () => void }) {
   if (!user.isActive) return <span className="text-xs text-muted-foreground">Historial conservado</span>
@@ -85,9 +33,11 @@ function RowAction({ user, onDeactivate }: { user: CompanyUser; onDeactivate: ()
 
 interface ListProps {
   users: CompanyUser[]; ctx: AdminContext; canWrite: boolean; onChanged: () => void
+  catalog: QueryState<CatalogEntry[]>
+  onAssigned: (id: string, role: NonNullable<CompanyUser['role']>) => void
 }
 
-function UsersTable({ users, ctx, canWrite, onChanged }: ListProps) {
+function UsersTable({ users, ctx, canWrite, onChanged, catalog, onAssigned }: ListProps) {
   const [confirming, setConfirming] = useState<string | null>(null)
   const columns = canWrite ? 7 : 6
   return (
@@ -109,8 +59,9 @@ function UsersTable({ users, ctx, canWrite, onChanged }: ListProps) {
             <TableRow className={cn(!u.isActive && 'text-muted-foreground')}>
               <TableCell className="font-medium">{u.user.name}</TableCell>
               <TableCell>{u.user.email}</TableCell>
-              {/* Rol de la membresía (Parcial II), solo lectura esta semana. */}
-              <TableCell>{u.role?.name ?? <span className="italic text-muted-foreground">Sin rol</span>}</TableCell>
+              <TableCell className="whitespace-normal">
+                <UserRole user={u} ctx={ctx} catalog={catalog} onAssigned={onAssigned} />
+              </TableCell>
               <TableCell>{u.isAdmin ? 'Sí' : 'No'}</TableCell>
               <TableCell><StatusBadge active={u.isActive} /></TableCell>
               <TableCell className="whitespace-nowrap">{formatJoinedAt(u.joinedAt)}</TableCell>
@@ -136,7 +87,7 @@ function UsersTable({ users, ctx, canWrite, onChanged }: ListProps) {
 }
 
 // Debajo de md la tabla de 7 columnas obligaría a desplazarse de lado: cada membresía es una tarjeta.
-function UsersCards({ users, ctx, canWrite, onChanged }: ListProps) {
+function UsersCards({ users, ctx, canWrite, onChanged, catalog, onAssigned }: ListProps) {
   const [confirming, setConfirming] = useState<string | null>(null)
   return (
     <ul className="divide-y divide-white/[0.06]">
@@ -149,8 +100,9 @@ function UsersCards({ users, ctx, canWrite, onChanged }: ListProps) {
             </div>
             <StatusBadge active={u.isActive} />
           </div>
+          <div className="text-xs"><UserRole user={u} ctx={ctx} catalog={catalog} onAssigned={onAssigned} /></div>
           <p className="text-xs text-muted-foreground">
-            Rol: {u.role?.name ?? 'Sin rol'} · Administrador: {u.isAdmin ? 'Sí' : 'No'} · Ingreso: {formatJoinedAt(u.joinedAt)}
+            Administrador: {u.isAdmin ? 'Sí' : 'No'} · Ingreso: {formatJoinedAt(u.joinedAt)}
           </p>
           {canWrite && confirming !== u.id && <RowAction user={u} onDeactivate={() => setConfirming(u.id)} />}
           {canWrite && confirming === u.id && u.isActive && (
@@ -163,58 +115,26 @@ function UsersCards({ users, ctx, canWrite, onChanged }: ListProps) {
   )
 }
 
-const EMPTY_FORM = { name: '', email: '', password: '' }
-
-function NewUserForm({ ctx, onCreated, onClose }: { ctx: AdminContext; onCreated: () => void; onClose: () => void }) {
-  const [form, setForm] = useState(EMPTY_FORM)
-  const { run, pending, error } = useMutation(ctx.onUnauthenticated)
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const name = form.name.trim()
-    if (await run(() => createCompanyUser(ctx.token, ctx.companyId, { ...form, name, email: form.email.trim() }))) {
-      toast.success(`${name} se agregó a la empresa`)
-      setForm(EMPTY_FORM) // la contraseña no se queda en la pantalla
-      onCreated()
-    }
-  }
-
-  return (
-    <FormPanel title="Nuevo usuario" onClose={onClose}
-      note="Entra con el rol Consulta. El administrador principal ya existe (createCompanyAdmin) y no se crea desde aquí.">
-      <form onSubmit={(e) => void submit(e)} className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-3">
-          <Field id="nu-name" label="Nombre">
-            <Input id="nu-name" required value={form.name} className={FIELD}
-              onChange={(e) => setForm({ ...form, name: e.target.value })} />
-          </Field>
-          <Field id="nu-email" label="Correo">
-            <Input id="nu-email" type="email" required autoComplete="off" value={form.email} className={FIELD}
-              onChange={(e) => setForm({ ...form, email: e.target.value })} />
-          </Field>
-          {/* La contraseña solo existe aquí y en la mutación; la respuesta no la devuelve y ninguna tabla la muestra. */}
-          <Field id="nu-password" label="Contraseña" hint="Mínimo 8 caracteres.">
-            <Input id="nu-password" type="password" required minLength={8} autoComplete="new-password"
-              value={form.password} className={FIELD} onChange={(e) => setForm({ ...form, password: e.target.value })} />
-          </Field>
-        </div>
-        <FormError message={error} />
-        <Button type="submit" disabled={pending} className={PRIMARY}>
-          {pending && <Loader2 className="animate-spin" />}
-          Guardar
-        </Button>
-      </form>
-    </FormPanel>
-  )
-}
-
 export function UsersModule({ ctx }: { ctx: AdminContext }) {
   const fetcher = useCallback(() => fetchCompanyUsers(ctx.token, ctx.companyId), [ctx.token, ctx.companyId])
   const { state, reload } = useApiQuery(fetcher, ctx.onUnauthenticated)
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<StatusFilter>('all')
   const [formOpen, setFormOpen] = useState(false)
+  const [assigned, setAssigned] = useState<{
+    base: CompanyUser[]; roles: Record<string, NonNullable<CompanyUser['role']>>
+  }>()
   const canWrite = can(ctx.permissions, 'company.users.write')
+  const canAssign = can(ctx.permissions, 'roles.write')
+  const fetchCatalog = useCallback(() => canAssign ? fetchRoles(ctx.token) : Promise.resolve([]), [canAssign, ctx.token])
+  const { state: catalog, reload: reloadCatalog } = useApiQuery(fetchCatalog, ctx.onUnauthenticated)
+  function onAssigned(id: string, role: NonNullable<CompanyUser['role']>) {
+    if (state.status !== 'success') return
+    setAssigned((previous) => ({
+      base: state.data,
+      roles: { ...(previous?.base === state.data ? previous.roles : {}), [id]: role },
+    }))
+  }
 
   // Sin company.users.write no se dibuja el botón (el API lo rechazaría igual).
   const action = canWrite && !formOpen ? (
@@ -245,18 +165,22 @@ export function UsersModule({ ctx }: { ctx: AdminContext }) {
             </div>
             <SegmentedFilter label="Estado" options={STATUS_OPTIONS} value={status} onChange={setStatus} />
           </div>
+          {canAssign && catalog.status === 'error' && <LoadFailed error={catalog.error} onRetry={reloadCatalog} />}
+          {canAssign && catalog.status === 'success' && !catalog.data.length && <EmptyState>No hay roles activos.</EmptyState>}
           {state.status === 'loading' && <TableSkeleton label="Cargando usuarios" />}
           {state.status === 'success' && (() => {
-            const rows = filterUsers(state.data, search, status)
+            const rows = filterUsers(state.data, search, status).map((user) => ({
+              ...user, role: (assigned?.base === state.data ? assigned.roles[user.id] : undefined) ?? user.role,
+            }))
             if (state.data.length === 0) return <EmptyState>La empresa todavía no tiene usuarios.</EmptyState>
             if (rows.length === 0) return <EmptyState>Ningún usuario coincide con la búsqueda o el filtro.</EmptyState>
             return (
               <>
                 <div className="hidden md:block">
-                  <UsersTable users={rows} ctx={ctx} canWrite={canWrite} onChanged={reload} />
+                  <UsersTable users={rows} ctx={ctx} canWrite={canWrite} onChanged={reload} catalog={catalog} onAssigned={onAssigned} />
                 </div>
                 <div className="md:hidden">
-                  <UsersCards users={rows} ctx={ctx} canWrite={canWrite} onChanged={reload} />
+                  <UsersCards users={rows} ctx={ctx} canWrite={canWrite} onChanged={reload} catalog={catalog} onAssigned={onAssigned} />
                 </div>
               </>
             )

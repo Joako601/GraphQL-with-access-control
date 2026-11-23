@@ -1,4 +1,4 @@
-import { useCallback, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AdminPage } from '@/components/admin/AdminPage'
 import { DashboardPage } from '@/components/dashboard/DashboardPage'
 import { MobileNav, Sidebar } from '@/components/dashboard/Sidebar'
@@ -6,19 +6,36 @@ import { LoginPage } from '@/components/login/LoginPage'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { useHashRoute } from '@/hooks/useHashRoute'
+import { useApiQuery } from '@/hooks/useApiQuery'
+import { fetchMe } from '@/lib/admin'
 import type { Route } from '@/lib/route'
 import { clearSession, readSession, saveSession, type Session } from '@/lib/session'
 
 const EXPIRED_MESSAGE = 'Tu sesión expiró o el token no es válido. Inicia sesión de nuevo.'
 
 /** Una sola aplicación: mismo login, mismo menú; cambia la sección (financiero o administración). */
-function AppShell({ session, route, children }: { session: Session; route: Route; children: ReactNode }) {
+function AppShell({ session, route, onLogout, onUnauthenticated }: {
+  session: Session; route: Route; onLogout: () => void; onUnauthenticated: () => void
+}) {
+  const fetcher = useCallback(() => fetchMe(session.token), [session.token])
+  const { state, reload } = useApiQuery(fetcher, onUnauthenticated)
+  const permissions = state.status === 'success' ? state.data.permissions : []
+  useEffect(() => {
+    window.addEventListener('hashchange', reload)
+    return () => window.removeEventListener('hashchange', reload)
+  }, [reload])
+
   return (
     <div className="flex min-h-svh bg-background">
-      <Sidebar user={session.user} route={route} />
+      <Sidebar user={session.user} route={route} permissions={permissions} />
       <main className="mx-auto w-full max-w-7xl min-w-0 space-y-6 p-4 md:p-8">
-        <MobileNav route={route} />
-        {children}
+        <MobileNav route={route} permissions={permissions} />
+        {route.section === 'admin' ? (
+          <AdminPage session={session} module={route.module} state={state} reload={reload}
+            onLogout={onLogout} onUnauthenticated={onUnauthenticated} />
+        ) : (
+          <DashboardPage session={session} onLogout={onLogout} onUnauthenticated={onUnauthenticated} />
+        )}
       </main>
     </div>
   )
@@ -48,14 +65,7 @@ export default function App() {
   return (
     <TooltipProvider>
       {session ? (
-        <AppShell session={session} route={route}>
-          {route.section === 'admin' ? (
-            <AdminPage session={session} module={route.module} onLogout={handleLogout}
-              onUnauthenticated={handleExpired} />
-          ) : (
-            <DashboardPage session={session} onLogout={handleLogout} onUnauthenticated={handleExpired} />
-          )}
-        </AppShell>
+        <AppShell session={session} route={route} onLogout={handleLogout} onUnauthenticated={handleExpired} />
       ) : (
         <LoginPage notice={notice} onLogin={handleLogin} />
       )}
